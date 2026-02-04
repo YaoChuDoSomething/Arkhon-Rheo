@@ -1,0 +1,30 @@
+{
+    "recommendations": [
+        "MermaidChart.vscode-mermaid-chart",
+        "njpwerner.autodocstring",
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-docker",
+        "google.gemini-cli-companion",
+        "Google.gemini-code-assist",
+        "mhutchie.git-graph",
+        "ms-toolsai.jupyter",
+        "ms-toolsai.jupyter-cell-tags",
+        "ms-toolsai.jupyter-renderers",
+        "ms-toolsai.jupyter-slideshow",
+        "James-Yu.latex-workshop",
+        "ritwickdey.LiveServer",
+        "yzane.markdown-pdf",
+        "bierner.markdown-mermaid",
+        "DavidAnson.vscode-markdownlint",
+        "tomoyukim.vscode-mermaid-editor",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "donjayamanne.python-environment-manager",
+        "mechatroner.rainbow-csv",
+        "massdo.repomix-runner",
+        "charliermarsh.ruff",
+        "Gruntfuggly.todo-tree",
+        "astral-sh.ty",
+        "redhat.vscode-yaml"
+    ]
+}
