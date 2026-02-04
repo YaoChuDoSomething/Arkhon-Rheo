@@ -10,4 +10,4 @@ wheels/
 .env
 .venv/
 !.venv/bin/activate
-
+.research/
