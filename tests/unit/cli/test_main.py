@@ -35,9 +35,10 @@ def test_cli_run_help():
     assert "Run an Arkhon-Rheo workflow" in result.output
 
 
-def test_cli_migrate_placeholder():
-    """Test that arkhon-rheo migrate command exists as a placeholder."""
+def test_cli_migrate_success():
+    """Test that arkhon-rheo migrate command works with target."""
     runner = CliRunner()
-    result = runner.invoke(main, ["migrate", "--help"])
+    result = runner.invoke(main, ["migrate", "my_subgraph", "--type", "subgraph"])
     assert result.exit_code == 0
-    assert "Migrate LangGraph components to Arkhon-Rheo" in result.output
+    assert "Analyzing subgraph at: my_subgraph" in result.output
+    assert "Migration analysis complete" in result.output

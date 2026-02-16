@@ -1,6 +1,7 @@
 import click
 import os
 from arkhon_rheo import __version__
+from arkhon_rheo.cli.migrate import migrate_subgraph, migrate_agent
 
 
 @click.group()
@@ -35,10 +36,14 @@ def run(config):
 
 
 @main.command()
-def migrate():
+@click.argument("target")
+@click.option("--type", type=click.Choice(["subgraph", "agent"]), default="subgraph")
+def migrate(target, type):
     """Migrate LangGraph components to Arkhon-Rheo."""
-    click.echo("Migration tool placeholder.")
-    pass
+    if type == "subgraph":
+        migrate_subgraph(target)
+    else:
+        migrate_agent(target)
 
 
 if __name__ == "__main__":
