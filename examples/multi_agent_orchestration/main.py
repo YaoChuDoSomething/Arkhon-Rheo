@@ -1,14 +1,10 @@
 import asyncio
-from typing import TypedDict, Annotated
-from langgraph.graph import StateGraph, START, END
+from dataclasses import asdict
 from arkhon_rheo.core.agent import Agent
 from arkhon_rheo.core.message import AgentMessage
-
-
-# Define state for LangGraph
-class GraphState(TypedDict):
-    messages: list[AgentMessage]
-    next_step: str
+from arkhon_rheo.core.graph import Graph
+from arkhon_rheo.core.state import AgentState
+from arkhon_rheo.core.runtime.scheduler import RuntimeScheduler
 
 
 class Researcher(Agent):
@@ -21,42 +17,42 @@ class Writer(Agent):
         return f"Draft based on: {message.content}"
 
 
-async def research_node(state: GraphState):
+async def research_node(state: AgentState):
     agent = Researcher(name="researcher")
-    msg = state["messages"][-1]
-    res = await agent.process_message(msg)
-    state["messages"].append(
-        AgentMessage(sender="researcher", receiver="writer", content=res, type="info")
-    )
-    state["next_step"] = "write"
-    return state
+    # Get last message
+    last_msg_dict = state["messages"][-1]
+    last_msg = AgentMessage(**last_msg_dict)
+
+    res = await agent.process_message(last_msg)
+
+    new_msg = AgentMessage(sender="researcher", receiver="writer", content=res, type="info")
+    return {"messages": [asdict(new_msg)]}
 
 
-async def write_node(state: GraphState):
+async def write_node(state: AgentState):
     agent = Writer(name="writer")
-    msg = state["messages"][-1]
-    res = await agent.process_message(msg)
-    state["messages"].append(
-        AgentMessage(sender="writer", receiver="user", content=res, type="info")
-    )
-    state["next_step"] = "end"
-    return state
+    last_msg_dict = state["messages"][-1]
+    last_msg = AgentMessage(**last_msg_dict)
+
+    res = await agent.process_message(last_msg)
+
+    new_msg = AgentMessage(sender="writer", receiver="user", content=res, type="info")
+    return {"messages": [asdict(new_msg)], "is_completed": True}
 
 
 def create_orchestration_graph():
-    workflow = StateGraph(GraphState)
-    workflow.add_node("research", research_node)
-    workflow.add_node("write", write_node)
+    graph = Graph()
+    graph.add_node("research", research_node)
+    graph.add_node("write", write_node)
 
-    workflow.add_edge(START, "research")
-    workflow.add_edge("research", "write")
-    workflow.add_edge("write", END)
-
-    return workflow.compile()
+    graph.add_edge("research", "write")
+    return graph
 
 
 async def main():
     graph = create_orchestration_graph()
+    scheduler = RuntimeScheduler(graph, checkpoint_manager=None)
+
     initial_message = AgentMessage(
         sender="user",
         receiver="researcher",
@@ -64,13 +60,22 @@ async def main():
         type="request",
     )
 
-    print("🚀 Starting Multi-Agent Flow...")
-    final_state = await graph.ainvoke(
-        {"messages": [initial_message], "next_step": "start"}
-    )
+    state: AgentState = {
+        "messages": [asdict(initial_message)],
+        "next_step": "research",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "example_thread",
+    }
 
-    for msg in final_state["messages"]:
-        print(f"[{msg.sender} -> {msg.receiver}]: {msg.content[:50]}...")
+    print("🚀 Starting Refactored Multi-Agent Flow...")
+    await scheduler.run(state, entry_point="research")
+
+    print("\n--- Message History ---")
+    for msg_dict in state["messages"]:
+        m = AgentMessage(**msg_dict)
+        print(f"[{m.sender} -> {m.receiver}]: {m.content[:50]}...")
 
 
 if __name__ == "__main__":

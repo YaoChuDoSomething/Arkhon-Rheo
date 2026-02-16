@@ -12,20 +12,24 @@ All communication between agents is asynchronous and event-driven. Messages are 
 
 Unlike simple buffers, Arkhon-Rheo implements a recursive summarization system. As conversation history grows, older segments are summarized into high-level context, preserving key information while staying within context window limits.
 
-### 3. Subgraph Orchestration
+### 3. Graph-based Orchestration
 
-Workflows are modeled as directed graphs. Each node in the graph can be a single Agent or another Subgraph, allowing for deep nesting and hierarchical reasoning.
+Workflows are modeled as directed graphs using the `Graph` class. Each node in the graph represents a specialized action (single Agent or subgraph), and edges define the transition logic, including support for **Conditional Edges** that route execution based on runtime state.
+
+### 4. Runtime Scheduler
+
+The `RuntimeScheduler` is the central engine that drives the execution loop. It handles asynchronous node execution, state accumulation using specified operators, and integrated persistence via the `CheckpointManager`.
 
 ## Data Flow
 
 ```mermaid
 graph TD
-    User([User Request]) --> Orchestrator{Orchestrator}
-    Orchestrator --> AgentA[Agent A]
-    AgentA --> ToolA[Tool A]
-    ToolA --> AgentA
-    AgentA --> Orchestrator
-    Orchestrator --> AgentB[Agent B]
-    AgentB --> Orchestrator
-    Orchestrator --> Response([User Response])
+    User([User Request]) --> Scheduler{RuntimeScheduler}
+    Scheduler --> NodeA[Agent Node]
+    NodeA --> ToolA[External Tool]
+    ToolA --> NodeA
+    NodeA --> Scheduler
+    Scheduler -- Conditional Edge --> NodeB[Validator Node]
+    NodeB --> Scheduler
+    Scheduler --> Response([User Response])
 ```

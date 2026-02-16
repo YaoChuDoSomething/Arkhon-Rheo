@@ -1,6 +1,6 @@
 # Multi-Agent Orchestration Example
 
-This example demonstrates how to orchestrate multiple Arkhon-Rheo agents using **LangGraph**.
+This example demonstrates how to orchestrate multiple Arkhon-Rheo agents using the new **Graph** and **RuntimeScheduler** engine.
 
 ## Scenario
 
@@ -11,14 +11,15 @@ We have a two-agent team:
 
 ## The Graph
 
-The workflow is defined as a linear graph: `START -> Research -> Write -> END`.
+The workflow is defined as a directed graph: `START -> research -> write -> END`.
 
 ## Code Walkthrough
 
 ```python
 # See examples/multi_agent_orchestration/main.py for full code
 graph = create_orchestration_graph()
-final_state = await graph.ainvoke({"messages": [initial_msg]})
+scheduler = RuntimeScheduler(graph, checkpoint_manager=None)
+await scheduler.run(initial_state, entry_point="research")
 ```
 
 ## Running the Example
