@@ -12,15 +12,15 @@ class MockAgent(Agent):
 
 @pytest.mark.asyncio
 async def test_agent_initialization():
-    agent = TestAgent(name="test-agent")
+    agent = MockAgent(name="test-agent")
     assert agent.name == "test-agent"
     assert isinstance(agent.inbox, asyncio.Queue)
 
 
 @pytest.mark.asyncio
 async def test_agent_send_message():
-    sender = TestAgent(name="sender")
-    receiver = TestAgent(name="receiver")
+    sender = MockAgent(name="sender")
+    receiver = MockAgent(name="receiver")
     msg = AgentMessage(
         sender=sender.name, receiver=receiver.name, content="hello", type="request"
     )
@@ -34,7 +34,7 @@ async def test_agent_send_message():
 
 @pytest.mark.asyncio
 async def test_agent_receive_message():
-    agent = TestAgent(name="agent")
+    agent = MockAgent(name="agent")
     msg = AgentMessage(
         sender="sender", receiver="agent", content="hello", type="request"
     )
