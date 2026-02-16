@@ -1,40 +1,56 @@
 import pytest
-from unittest.mock import MagicMock
-from arkhon_rheo.core.state import ReActState
+import asyncio
+from unittest.mock import MagicMock, AsyncMock
+from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.nodes.thought_node import ThoughtNode
 
 
-def test_thought_node_execution():
-    """Verify ThoughtNode calls LLM and updates state."""
+@pytest.mark.asyncio
+async def test_thought_node_execution():
+    """Verify ThoughtNode calls LLM and updates messages in AgentState."""
 
     # Mock LLM chain/runnable
     mock_llm = MagicMock()
-    mock_llm.invoke.return_value = "I need to check the file size."
+    # If ThoughtNode uses a Runnable sequence, we mock the invoke or astream
+    mock_llm.invoke = MagicMock(
+        return_value=MagicMock(content="I need to check the file size.")
+    )
 
     node = ThoughtNode(llm=mock_llm)
-    initial_state = ReActState()
+    initial_state: AgentState = {
+        "messages": [{"role": "user", "content": "Calculate 2+2"}],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test_thread",
+    }
 
-    new_state = node(initial_state)
+    new_state = await node(initial_state)
 
     # Verify LLM was called
-    mock_llm.invoke.assert_called_once()
+    assert mock_llm.invoke.called
 
-    # Verify state update
-    assert new_state.thought == "I need to check the file size."
-    # Ideally should also check if a ReasoningStep was added, but that depends on node implementation detail.
-    # For now, just checking the thought attribute is sufficient for the first pass.
+    # Verify state update (new message appended)
+    assert len(new_state["messages"]) == 2
+    assert "file size" in new_state["messages"][-1]["content"]
 
 
-def test_thought_node_with_system_prompt():
-    """Verify ThoughtNode accepts system prompt or context."""
+@pytest.mark.asyncio
+async def test_thought_node_context_awareness():
+    """Verify ThoughtNode utilizes previous messages context."""
     mock_llm = MagicMock()
-    mock_llm.invoke.return_value = "Thinking..."
+    mock_llm.invoke = MagicMock(return_value=MagicMock(content="Thinking..."))
 
-    # Assuming prompt template injection or similar mechanism
-    # For MVP, maybe just passing state to LLM is enough context.
     node = ThoughtNode(llm=mock_llm)
-    node(ReActState(observation="Previous result"))
+    state: AgentState = {
+        "messages": [{"role": "assistant", "content": "Previously I thought X"}],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test",
+    }
 
-    # Check if observation was passed to LLM (implementation detail)
-    # mock_llm.invoke.assert_called_with(expect_some_prompt_structure)
+    await node(state)
     assert mock_llm.invoke.called

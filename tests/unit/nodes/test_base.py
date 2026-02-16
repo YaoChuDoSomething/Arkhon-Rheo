@@ -1,26 +1,34 @@
 import pytest
-from arkhon_rheo.core.state import ReActState
+from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.nodes.base import BaseNode
 
 
 def test_base_node_abstract_method():
     """Verify that BaseNode cannot be instantiated directly."""
-    # It should not be possible to instantiate an abstract base class
-    # But usually calling `BaseNode()` fails or `execute` raises NotImplementedError depending on implementation.
-    # We prefer ABC meta.
-
     with pytest.raises(TypeError):
         BaseNode()
 
 
 def test_concrete_node_implementation():
-    """Verify a concrete implementation works."""
+    """Verify a concrete implementation works with AgentState."""
 
     class TestNode(BaseNode):
-        def execute(self, state: ReActState) -> ReActState:
-            return state.with_thought("Executed")
+        async def execute(self, state: AgentState) -> AgentState:
+            state["shared_context"]["executed"] = True
+            return state
 
     node = TestNode()
-    initial_state = ReActState()
-    new_state = node(initial_state)  # Should be callable
-    assert new_state.thought == "Executed"
+    initial_state: AgentState = {
+        "messages": [],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test",
+    }
+
+    # BaseNode makes the class callable, invoking execute
+    import asyncio
+
+    new_state = asyncio.run(node(initial_state))
+    assert new_state["shared_context"]["executed"] is True

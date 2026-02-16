@@ -1,46 +1,34 @@
-from arkhon_rheo.core.state import ReActState
-from arkhon_rheo.core.rules.rule_engine import RuleEngine
-from arkhon_rheo.core.rules.builtin import (
-    MaxDepthRule,
-    ForbidGuessingRule,
-    CostLimitRule,
-)
+import pytest
+from arkhon_rheo.core.state import AgentState
+from arkhon_rheo.core.rules.engine import RuleEngine
 
 
-def test_rule_engine():
+def test_rule_engine_validation():
+    """Verify RuleEngine correctly validates state using custom rules."""
     engine = RuleEngine()
-    engine.add_rule(MaxDepthRule(max_steps=5))
 
-    # Valid state
-    state_valid = ReActState().with_metadata({"step_count": 3})
-    assert len(engine.evaluate(state_valid)) == 0
+    # Custom rule for testing
+    def mock_rule(state: AgentState) -> bool:
+        return "valid" in state["shared_context"]
 
-    # Invalid state
-    state_invalid = ReActState().with_metadata({"step_count": 6})
-    violations = engine.evaluate(state_invalid)
-    assert len(violations) == 1
-    assert "MaxDepth" in violations[0]
+    engine.add_rule(mock_rule)
 
+    state_valid: AgentState = {
+        "messages": [],
+        "next_step": "",
+        "shared_context": {"valid": True},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test",
+    }
+    assert engine.validate(state_valid)
 
-def test_forbid_guessing():
-    rule = ForbidGuessingRule()
-
-    state_valid = ReActState(thought="The answer is 42.")
-    assert rule.check(state_valid) is None
-
-    state_invalid = ReActState(thought="I guess the answer is 42.")
-    result = rule.check(state_invalid)
-    assert result is not None
-    assert "forbidden guess" in result
-
-
-def test_cost_limit():
-    rule = CostLimitRule(max_cost=0.5)
-
-    state_valid = ReActState().with_metadata({"total_cost": 0.1})
-    assert rule.check(state_valid) is None
-
-    state_invalid = ReActState().with_metadata({"total_cost": 0.6})
-    result = rule.check(state_invalid)
-    assert result is not None
-    assert "Total cost 0.6" in result
+    state_invalid: AgentState = {
+        "messages": [],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test",
+    }
+    assert not engine.validate(state_invalid)

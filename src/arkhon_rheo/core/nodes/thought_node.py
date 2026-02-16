@@ -1,7 +1,5 @@
-from typing import Any, Optional
-import time
-import uuid
-from arkhon_rheo.core.state import ReActState, ReasoningStep
+from typing import Any, Optional, Dict
+from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.nodes.base import BaseNode
 
 
@@ -17,37 +15,26 @@ class ThoughtNode(BaseNode):
         self.llm = llm
         self.system_prompt = system_prompt
 
-    def execute(self, state: ReActState) -> ReActState:
+    async def execute(self, state: AgentState) -> AgentState:
         """
         Generate a thought based on the current state.
         """
-        # Prepare input for LLM.
-        # Ideally this would involve a prompt template that formats the state.
-        # For this MVP step, we assume the LLM/Chain can handle the state dict
-        # or we serialize it simply.
+        # Prepare context from messages
+        messages = state.get("messages", [])
 
-        # Simple string representation for now if LLM expects string
-        input_str = f"Observation: {state.observation}\nGoal: {state.metadata.get('goal', 'Unknown')}"
-        if self.system_prompt:
-            input_str = f"System: {self.system_prompt}\n{input_str}"
+        # Invoke LLM (assuming it might be sync or async, but typically we wrap in a Runnable)
+        # For simplicity in this refactor, we maintain sync invoke if used, but wrap in awaitable if possible.
+        # In a real LangGraph setup, this node typically interacts with a bound LLM.
 
-        # Invoke LLM
-        # We assume llm.invoke returns a string or a message with content
-        response = self.llm.invoke(input_str)
+        response = self.llm.invoke(messages)
 
         # Handle response types (Str or AIMessage)
-        thought_content = response
+        content = response
         if hasattr(response, "content"):
-            thought_content = response.content
+            content = response.content
 
-        # Create ReasoningStep
-        step = ReasoningStep(
-            step_id=str(uuid.uuid4()),
-            type="thought",
-            content=str(thought_content),
-            timestamp=time.time(),
-            metadata={"node": "ThoughtNode"},
-        )
+        # Append new message to history
+        new_message = {"role": "assistant", "content": str(content)}
+        state["messages"].append(new_message)
 
-        # Update state
-        return state.with_thought(str(thought_content)).add_step(step)
+        return state
