@@ -1,57 +1,72 @@
-from arkhon_rheo.core.state import ReActState
-from arkhon_rheo.core.graph import StateGraph
 import pytest
+import asyncio
+from arkhon_rheo.core.state import AgentState
+from arkhon_rheo.core.graph import Graph
+from arkhon_rheo.core.runtime.scheduler import RuntimeScheduler
+
+
+@pytest.fixture
+def initial_state():
+    return {
+        "messages": [],
+        "next_step": "start",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test_thread",
+    }
 
 
 @pytest.mark.asyncio
-async def test_graph_initialization():
-    state = ReActState()
-    graph = StateGraph(state)
-    assert graph.current_state == state
+async def test_graph_and_scheduler_flow(initial_state):
+    graph = Graph()
 
+    def node_a(state: AgentState):
+        return {"messages": [{"role": "assistant", "content": "Thought A"}]}
 
-@pytest.mark.asyncio
-async def test_graph_execution_flow():
-    initial_state = ReActState()
-    graph = StateGraph(initial_state)
-
-    def node_a(state: ReActState) -> ReActState:
-        return state.with_thought("Thought from A")
-
-    def node_b(state: ReActState) -> ReActState:
-        return state.with_action("Action from B")
+    def node_b(state: AgentState):
+        return {
+            "messages": [{"role": "assistant", "content": "Action B"}],
+            "is_completed": True,
+        }
 
     graph.add_node("A", node_a)
     graph.add_node("B", node_b)
     graph.add_edge("A", "B")
 
-    # Run step by step
-    # Note: execute_step might return the next node ID or the new state?
-    # Based on ReAct pattern, often we run until termination.
-    # But for now let's assume granular control: execute_step(node_id) -> next_node_id
-    next_node = await graph.execute_step("A")
-    assert next_node == "B"
-    assert graph.current_state.thought == "Thought from A"
-    assert graph.current_state.action is None
+    scheduler = RuntimeScheduler(graph, checkpoint_manager=None)
+    await scheduler.run(initial_state, "A")
 
-    next_node = await graph.execute_step("B")
-    assert next_node is None  # No edge from B
-    assert graph.current_state.action == "Action from B"
+    assert len(initial_state["messages"]) == 2
+    assert initial_state["messages"][0]["content"] == "Thought A"
+    assert initial_state["messages"][1]["content"] == "Action B"
+    assert initial_state["is_completed"] is True
 
 
 @pytest.mark.asyncio
-async def test_graph_run_loop():
-    initial_state = ReActState()
-    graph = StateGraph(initial_state)
+async def test_conditional_routing(initial_state):
+    graph = Graph()
 
-    def node_a(state: ReActState) -> ReActState:
-        count = state.metadata.get("count", 0)
-        return state.with_metadata({"count": count + 1})
+    def logic_node(state: AgentState):
+        state["shared_context"]["val"] = 10
+        return state
 
-    graph.add_node("A", node_a)
-    # Self loop for testing max steps
-    graph.add_edge("A", "A")
+    def end_node(state: AgentState):
+        state["is_completed"] = True
+        return state
 
-    # This should run A 5 times and stop
-    final_state = await graph.run("A", max_steps=5)
-    assert final_state.metadata["count"] == 5
+    def condition_fn(state: AgentState):
+        return "yes" if state["shared_context"].get("val") == 10 else "no"
+
+    graph.add_node("logic", logic_node)
+    graph.add_node("end", end_node)
+
+    graph.add_conditional_edge(
+        source="logic", path_map={"yes": "end", "no": "END"}, condition=condition_fn
+    )
+
+    scheduler = RuntimeScheduler(graph, checkpoint_manager=None)
+    await scheduler.run(initial_state, "logic")
+
+    assert initial_state["shared_context"]["val"] == 10
+    assert initial_state["is_completed"] is True

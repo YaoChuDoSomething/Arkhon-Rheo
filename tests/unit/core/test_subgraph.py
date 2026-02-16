@@ -1,66 +1,63 @@
 import pytest
-import pytest
-from arkhon_rheo.core.subgraph import SubGraph
-from arkhon_rheo.core.graph import StateGraph
-from arkhon_rheo.core.state import ReActState
+from arkhon_rheo.core.graph import Graph
+from arkhon_rheo.core.state import AgentState
+from arkhon_rheo.core.runtime.scheduler import RuntimeScheduler
 
 
 @pytest.mark.asyncio
-async def test_subgraph_execution():
-    # Define a simple graph to be used as a subgraph
-    state = ReActState()
-    sub_builder = StateGraph(state)
+async def test_graph_as_subgraph_execution():
+    """Test that a Graph can be executed and its result returned to another context."""
+    # Define a 'subgraph'
+    sub_graph = Graph()
 
-    def sub_node(s: ReActState) -> ReActState:
-        return s.with_thought("Inside SubGraph")
+    async def sub_node_a(state: AgentState) -> AgentState:
+        state["shared_context"]["sub"] = "completed"
+        return state
 
-    sub_builder.add_node("sub_A", sub_node)
-    sub_builder.add_edge(
-        "sub_A", "sub_A"
-    )  # Self loop to stop? No, we need a terminal condition or max steps
-    # For this test, let's just run one step or set entry/exit
+    sub_graph.add_node("start", sub_node_a)
+    sub_graph.add_edge("start", "__end__")
 
-    # Actually, StateGraph.run() usually runs until termination or max steps.
-    # Let's make "sub_A" just return the state and have no outgoing edges?
-    # If no outgoing, it terminates?
-    # Based on test_graph.py earlier:
-    # "next_node = graph.execute_step("B") -> None # No edge from B"
+    # Initial state
+    initial_state: AgentState = {
+        "messages": [],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test_thread",
+    }
 
-    # So if we add node without edges, it terminates after execution.
+    # Execute it using the scheduler
+    scheduler = RuntimeScheduler(sub_graph, checkpoint_manager=None)
+    final_state = await scheduler.run(initial_state, entry_point="start")
 
-    # Wrap it in SubGraph
-    subgraph = SubGraph("my_subgraph", sub_builder, entry_point="sub_A")
-
-    # Execute subgraph
-    initial_state = ReActState()
-    result_state = await subgraph(initial_state)
-
-    assert result_state.thought == "Inside SubGraph"
+    assert final_state["shared_context"]["sub"] == "completed"
 
 
 @pytest.mark.asyncio
-async def test_subgraph_context_isolation():
-    # Verify that local vars in subgraph don't pollute unless returned
-    # For ReActState, it's immutable-ish, so we return new state.
-    # If SubGraph returns the new state, it modifies the flow.
-    # But maybe we want some isolation?
-    # Sprint 2.3 goal says: "test context propagation"
+async def test_subgraph_context_propagation():
+    """Verify that context is correctly passed between nested execution flows."""
+    parent_state: AgentState = {
+        "messages": [],
+        "next_step": "",
+        "shared_context": {"parent": "data"},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test_thread",
+    }
 
-    state = ReActState(metadata={"parent": "value"})
-    sub_builder = StateGraph(state)
+    child_graph = Graph()
 
-    def sub_node(s: ReActState) -> ReActState:
-        # Check parent context
-        assert s.metadata["parent"] == "value"
-        # Add local context
-        return s.update_metadata({"child": "local"})
+    async def child_node(state: AgentState) -> AgentState:
+        assert state["shared_context"]["parent"] == "data"
+        state["shared_context"]["child"] = "updated"
+        return state
 
-    sub_builder.add_node("start", sub_node)
+    child_graph.add_node("child_start", child_node)
+    child_graph.add_edge("child_start", "__end__")
 
-    subgraph = SubGraph("isolation_test", sub_builder, entry_point="start")
+    scheduler = RuntimeScheduler(child_graph, checkpoint_manager=None)
+    result = await scheduler.run(parent_state, entry_point="child_start")
 
-    result = await subgraph(state)
-
-    # If we want simple propagation, child should be there
-    assert result.metadata["child"] == "local"
-    assert result.metadata["parent"] == "value"
+    assert result["shared_context"]["child"] == "updated"
+    assert result["shared_context"]["parent"] == "data"

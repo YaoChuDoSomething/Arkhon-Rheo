@@ -1,0 +1,2053 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A sophisticated multi-agent orchestration framework built on LangGraph and Google GenAI.">
+      
+      
+        <meta name="author" content="Yao Chu">
+      
+      
+        <link rel="canonical" href="https://arkhon-rheo.ai/vers0.1.0/ARCHITECTURE/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Arkhon-Rheo + ReActEngine Architecture Overview - Arkhon-Rheo</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#arkhon-rheo-reactengine-architecture-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Arkhon-Rheo" class="md-header__button md-logo" aria-label="Arkhon-Rheo" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Arkhon-Rheo
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Arkhon-Rheo + ReActEngine Architecture Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/YaoChuDoSomething/arkhon-rheo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    YaoChuDoSomething/arkhon-rheo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../getting_started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cli_reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/simple/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Arkhon-Rheo" class="md-nav__button md-logo" aria-label="Arkhon-Rheo" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Arkhon-Rheo
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/YaoChuDoSomething/arkhon-rheo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    YaoChuDoSomething/arkhon-rheo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/simple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simple Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/multi_agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Agent Orchestration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-architectural-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Architectural Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Architectural Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-core-tenets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Core Tenets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-design-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Design Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-component-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Component Hierarchy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Component Hierarchy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-layered-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Layered Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-dependency-direction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Dependency Direction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-core-module-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Core Module Breakdown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Core Module Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-core-state-machine-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 core/ - State Machine &amp; Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-nodes-execution-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 nodes/ - Execution Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-tools-tool-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 tools/ - Tool Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-rules-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 rules/ - Governance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-memory-memory-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 memory/ - Memory Systems
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-runtime-execution-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 runtime/ - Execution Runtime
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Data Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Data Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-state-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 State Evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-information-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Information Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Extension Points
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Extension Points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-custom-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Custom Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-custom-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Custom Tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-custom-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Custom Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-custom-memory-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Custom Memory Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-configuration-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Configuration System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Configuration System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-config-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Config Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-config-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Config Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-security-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Security Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Security Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-trust-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Trust Boundaries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-sandboxing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Sandboxing Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-scalability-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Scalability Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Scalability Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-vertical-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Vertical Scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-horizontal-scaling-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Horizontal Scaling (Future)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-migration-from-langgraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Migration from LangGraph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Migration from LangGraph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-code-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Code Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-observability-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Observability Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Observability Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-logging-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Logging Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Testing Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. Testing Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-test-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 Test Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-test-coverage-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 Test Coverage Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end-of-architecture-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End of Architecture Document
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="arkhon-rheo-reactengine-architecture-overview">Arkhon-Rheo + ReActEngine Architecture Overview</h1>
+<p><strong>Version</strong>: 1.0.0<br />
+<strong>Status</strong>: Draft<br />
+<strong>Last Updated</strong>: 2026-02-14<br />
+<strong>Code Path</strong>: <code>src/arkhon-rheo/</code></p>
+<hr />
+<h2 id="1-introduction">1. Introduction</h2>
+<p>This document provides a comprehensive architectural overview of the Arkhon-Rheo agent system, detailing the component hierarchy, dependency relationships, and structural patterns that enable deterministic AI workflow execution.</p>
+<p><strong>Audience</strong>: Software architects, senior engineers, and technical stakeholders.</p>
+<hr />
+<h2 id="2-architectural-principles">2. Architectural Principles</h2>
+<h3 id="21-core-tenets">2.1 Core Tenets</h3>
+<ol>
+<li><strong>Event Sourcing First</strong>: All state changes are immutable events</li>
+<li><strong>Graph-based Execution</strong>: Workflows modeled as directed graphs</li>
+<li><strong>Rule-Driven Governance</strong>: Explicit constraints via declarative rules</li>
+<li><strong>Plugin Architecture</strong>: Tools and memory backends are pluggable</li>
+<li><strong>Zero Magic</strong>: Explicit is better than implicit</li>
+</ol>
+<h3 id="22-design-patterns">2.2 Design Patterns</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Pattern</th>
+<th style="text-align: left;">Usage</th>
+<th style="text-align: left;">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>State Machine</strong></td>
+<td style="text-align: left;">Execution flow control</td>
+<td style="text-align: left;"><code>core/graph.py</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Event Sourcing</strong></td>
+<td style="text-align: left;">State management</td>
+<td style="text-align: left;"><code>core/state.py</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Registry</strong></td>
+<td style="text-align: left;">Tool discovery</td>
+<td style="text-align: left;"><code>tools/registry.py</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Strategy</strong></td>
+<td style="text-align: left;">Memory backend selection</td>
+<td style="text-align: left;"><code>memory/vector_store.py</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Chain of Responsibility</strong></td>
+<td style="text-align: left;">Rule validation</td>
+<td style="text-align: left;"><code>rules/rule_engine.py</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Template Method</strong></td>
+<td style="text-align: left;">Node execution lifecycle</td>
+<td style="text-align: left;"><code>nodes/base.py</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-component-hierarchy">3. Component Hierarchy</h2>
+<h3 id="31-layered-architecture">3.1 Layered Architecture</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>graph TD
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    subgraph &quot;L1: Interface Layer&quot;
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        CLI[CLI Interface]
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        API[REST API]
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        REPL[REPL]
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    end
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    subgraph &quot;L2: Orchestration Layer&quot;
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        Runtime[Runtime Executor]
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        Scheduler[Task Scheduler]
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        Lifecycle[Agent Lifecycle]
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    end
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    subgraph &quot;L3: Core Engine&quot;
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        StateGraph[StateGraph]
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        NodeRegistry[Node Registry]
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>        ToolRegistry[Tool Registry]
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        RuleEngine[Rule Engine]
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    end
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    subgraph &quot;L4: Domain Layer&quot;
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        Nodes[Nodes]
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        Tools[Tools]
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        Rules[Rules]
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    end
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    subgraph &quot;L5: Infrastructure&quot;
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>        Memory[Memory Systems]
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        Checkpoint[Checkpointing]
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        Config[Configuration]
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    end
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    CLI --&gt; Runtime
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    API --&gt; Runtime
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    REPL --&gt; Runtime
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>    Runtime --&gt; StateGraph
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    Runtime --&gt; Scheduler
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    Runtime --&gt; Lifecycle
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    StateGraph --&gt; NodeRegistry
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    StateGraph --&gt; ToolRegistry
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    StateGraph --&gt; RuleEngine
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>    NodeRegistry --&gt; Nodes
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>    ToolRegistry --&gt; Tools
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>    RuleEngine --&gt; Rules
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    Nodes --&gt; Memory
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>    StateGraph --&gt; Checkpoint
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>    Runtime --&gt; Config
+</code></pre></div>
+<h3 id="32-dependency-direction">3.2 Dependency Direction</h3>
+<p><strong>Rule</strong>: Dependencies flow downward only (lower layers never depend on upper layers)</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>graph LR
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Interface ──&gt; Orchestration ──&gt; Core ──&gt; Domain ──&gt; Infrastructure
+</code></pre></div>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>Clear separation of concerns</li>
+<li>Easier testing (mock lower layers)</li>
+<li>Modular replacement</li>
+</ul>
+<hr />
+<h2 id="4-core-module-breakdown">4. Core Module Breakdown</h2>
+<h3 id="41-core-state-machine-graph">4.1 <code>core/</code> - State Machine &amp; Graph</h3>
+<p><strong>Purpose</strong>: Deterministic execution engine</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">Responsibility</th>
+<th style="text-align: left;">Key Classes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>state.py</code></td>
+<td style="text-align: left;">Immutable state management</td>
+<td style="text-align: left;"><code>ReActState</code>, <code>ReasoningStep</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>graph.py</code></td>
+<td style="text-align: left;">Graph execution</td>
+<td style="text-align: left;"><code>StateGraph</code>, <code>Edge</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>context.py</code></td>
+<td style="text-align: left;">Thread-local context</td>
+<td style="text-align: left;"><code>ContextManager</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>step.py</code></td>
+<td style="text-align: left;">Step factory</td>
+<td style="text-align: left;"><code>StepFactory</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dependencies</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># core/graph.py</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.core.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReActState</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.nodes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseNode</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.rules.rule_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuleEngine</span>
+</code></pre></div>
+<p><strong>Invariants</strong>:</p>
+<ul>
+<li>States are frozen dataclasses (immutable)</li>
+<li>Graph structure is acyclic (no infinite loops)</li>
+<li>Every edge has valid source and target nodes</li>
+</ul>
+<hr />
+<h3 id="42-nodes-execution-nodes">4.2 <code>nodes/</code> - Execution Nodes</h3>
+<p><strong>Purpose</strong>: Implement ReAct cycle phases</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Node</th>
+<th style="text-align: left;">Input</th>
+<th style="text-align: left;">Output</th>
+<th style="text-align: left;">Side Effects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>ThoughtNode</code></td>
+<td style="text-align: left;">ReActState</td>
+<td style="text-align: left;">State + thought</td>
+<td style="text-align: left;">LLM API call</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ValidateNode</code></td>
+<td style="text-align: left;">State + thought</td>
+<td style="text-align: left;">State (validated)</td>
+<td style="text-align: left;">Rule checks</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ActionNode</code></td>
+<td style="text-align: left;">State + validated</td>
+<td style="text-align: left;">State + action</td>
+<td style="text-align: left;">Tool execution</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ObservationNode</code></td>
+<td style="text-align: left;">State + action</td>
+<td style="text-align: left;">State + observation</td>
+<td style="text-align: left;">Result formatting</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CommitNode</code></td>
+<td style="text-align: left;">State + observation</td>
+<td style="text-align: left;">State (committed)</td>
+<td style="text-align: left;">Checkpoint save</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Node Lifecycle</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>sequenceDiagram
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    participant Graph
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    participant Node
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    participant Before
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    participant Run
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    participant After
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    Graph-&gt;&gt;Node: execute(state)
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    Node-&gt;&gt;Before: before_run(state)
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    Before--&gt;&gt;Node: None
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    Node-&gt;&gt;Run: run(state)
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    Run--&gt;&gt;Node: new_state
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    Node-&gt;&gt;After: after_run(new_state)
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    After--&gt;&gt;Node: None
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    Node--&gt;&gt;Graph: new_state
+</code></pre></div>
+<p><strong>Example Node</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># nodes/thought_node.py</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.nodes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseNode</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.core.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReActState</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">ThoughtNode</span><span class="p">(</span><span class="n">BaseNode</span><span class="p">):</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">before_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ReActState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;entering_thought_node&quot;</span><span class="p">,</span> <span class="n">step_count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">steps</span><span class="p">))</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ReActState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReActState</span><span class="p">:</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="n">thought</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_prompt</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="n">step</span> <span class="o">=</span> <span class="n">ReasoningStep</span><span class="p">(</span><span class="n">thought</span><span class="o">=</span><span class="n">thought</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="k">return</span> <span class="n">replace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">state</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="n">step</span><span class="p">])</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">after_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ReActState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;exiting_thought_node&quot;</span><span class="p">,</span> <span class="n">thought_length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">thought</span><span class="p">))</span>
+</code></pre></div>
+<hr />
+<h3 id="43-tools-tool-integration">4.3 <code>tools/</code> - Tool Integration</h3>
+<p><strong>Purpose</strong>: External API abstraction</p>
+<p><strong>Structure</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>tools/
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── base.py           # Tool, ToolResult
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├── registry.py       # ToolRegistry
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>├── builtin/
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│   ├── search.py
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│   ├── calculator.py
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│   └── file_ops.py
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>└── custom/           # User-defined tools
+</code></pre></div>
+<p><strong>Tool Interface</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Tool</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="nd">@property</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Unique tool identifier.&quot;&quot;&quot;</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="nd">@property</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Human-readable description for LLM.&quot;&quot;&quot;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="nd">@property</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;JSON Schema generated from execute() signature.&quot;&quot;&quot;</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_schema</span><span class="p">()</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute tool with validated arguments.&quot;&quot;&quot;</span>
+</code></pre></div>
+<p><strong>Tool Registration</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># In user code</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">registry</span> <span class="o">=</span> <span class="n">ToolRegistry</span><span class="p">()</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nd">@registry</span><span class="o">.</span><span class="n">register</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">CustomTool</span><span class="p">(</span><span class="n">Tool</span><span class="p">):</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;custom_action&quot;</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Performs custom action&quot;</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">param2</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">do_work</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">)</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h3 id="44-rules-governance">4.4 <code>rules/</code> - Governance</h3>
+<p><strong>Purpose</strong>: Enforce constraints on reasoning steps</p>
+<p><strong>Rule Types</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">Check</th>
+<th style="text-align: left;">Violation Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>MaxDepthRule</code></td>
+<td style="text-align: left;"><code>len(steps) &lt; max_depth</code></td>
+<td style="text-align: left;">Terminate execution</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ForbidGuessingRule</code></td>
+<td style="text-align: left;">No "I guess" in thought</td>
+<td style="text-align: left;">Retry thought</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CostLimitRule</code></td>
+<td style="text-align: left;">Total token cost &lt; limit</td>
+<td style="text-align: left;">Terminate execution</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>RequireToolUseRule</code></td>
+<td style="text-align: left;">Action must be valid tool</td>
+<td style="text-align: left;">Retry action selection</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule Engine</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">RuleEngine</span><span class="p">:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">:</span> <span class="n">Rule</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">ReasoningStep</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Run all rules. Raises RuleViolationError if any fail.&quot;&quot;&quot;</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">step</span><span class="p">):</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>                <span class="k">raise</span> <span class="n">RuleViolationError</span><span class="p">(</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>                    <span class="n">rule</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>                    <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>                    <span class="n">reason</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">violation_message</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>                <span class="p">)</span>
+</code></pre></div>
+<p><strong>Custom Rule Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">NoHallucinationRule</span><span class="p">(</span><span class="n">Rule</span><span class="p">):</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;no_hallucination&quot;</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">ReasoningStep</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Fail if thought contains known hallucination indicators.&quot;&quot;&quot;</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>        <span class="n">hallucination_phrases</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>            <span class="s2">&quot;I don&#39;t actually know&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>            <span class="s2">&quot;I&#39;m not sure but&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>            <span class="s2">&quot;probably&quot;</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>        <span class="p">]</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>        <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>            <span class="n">phrase</span> <span class="ow">in</span> <span class="n">step</span><span class="o">.</span><span class="n">thought</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> 
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>            <span class="k">for</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="n">hallucination_phrases</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>        <span class="p">)</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>    <span class="nd">@property</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">violation_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>        <span class="k">return</span> <span class="s2">&quot;Thought contains uncertainty markers&quot;</span>
+</code></pre></div>
+<hr />
+<h3 id="45-memory-memory-systems">4.5 <code>memory/</code> - Memory Systems</h3>
+<p><strong>Purpose</strong>: Short-term and long-term information storage</p>
+<p><strong>Components</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>classDiagram
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    class MemoryManager {
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>        +short_term: ContextWindow
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>        +long_term: VectorStore
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>        +add(message: dict)
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>        +query(text: str) list~dict~
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    }
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    class ContextWindow {
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>        -max_tokens: int
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        -messages: deque
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>        +add(message: dict)
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>        +get_context() list~dict~
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    }
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    class VectorStore {
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>        &lt;&lt;abstract&gt;&gt;
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>        +upsert(id, vector, metadata)
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>        +query(vector, top_k) list~dict~
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>    }
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>    class PineconeStore {
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>        -index: PineconeIndex
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>        +upsert(...)
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>        +query(...)
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>    }
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>    class WeaviateStore {
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>        -client: WeaviateClient
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>        +upsert(...)
+<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a>        +query(...)
+<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>    }
+<a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>
+<a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>    MemoryManager --&gt; ContextWindow
+<a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>    MemoryManager --&gt; VectorStore
+<a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a>    VectorStore &lt;|-- PineconeStore
+<a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a>    VectorStore &lt;|-- WeaviateStore
+</code></pre></div>
+<p><strong>Memory Hierarchy</strong>:</p>
+<ol>
+<li><strong>L1 - Context Window</strong>: Last N messages (in-memory)</li>
+<li><strong>L2 - Vector Store</strong>: Semantic search over all history</li>
+<li><strong>L3 - Checkpoints</strong>: Full state snapshots on disk</li>
+</ol>
+<hr />
+<h3 id="46-runtime-execution-runtime">4.6 <code>runtime/</code> - Execution Runtime</h3>
+<p><strong>Purpose</strong>: Orchestrate graph execution</p>
+<p><strong>Key Components</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">RuntimeExecutor</span><span class="p">:</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Main execution coordinator.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>        <span class="n">graph</span><span class="p">:</span> <span class="n">StateGraph</span><span class="p">,</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>        <span class="n">config</span><span class="p">:</span> <span class="n">EngineConfig</span><span class="p">,</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>        <span class="n">checkpoint_mgr</span><span class="p">:</span> <span class="n">CheckpointManager</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="p">):</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_mgr</span> <span class="o">=</span> <span class="n">checkpoint_mgr</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>        <span class="bp">self</span><span class="p">,</span> 
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>        <span class="n">initial_state</span><span class="p">:</span> <span class="n">ReActState</span><span class="p">,</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>        <span class="n">interrupt_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReActState</span><span class="p">:</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute until termination or max steps.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>        <span class="n">state</span> <span class="o">=</span> <span class="n">initial_state</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_steps</span><span class="p">):</span>
+<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>            <span class="c1"># Checkpoint every N steps</span>
+<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>            <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">checkpoint_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_mgr</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>
+<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>            <span class="c1"># Human approval gate</span>
+<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>            <span class="k">if</span> <span class="n">interrupt_fn</span> <span class="ow">and</span> <span class="n">interrupt_fn</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>                <span class="n">user_decision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_await_user_input</span><span class="p">()</span>
+<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>                <span class="k">if</span> <span class="n">user_decision</span> <span class="o">==</span> <span class="s2">&quot;abort&quot;</span><span class="p">:</span>
+<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>                    <span class="k">return</span> <span class="n">replace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">terminated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>
+<a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>            <span class="c1"># Execute next node</span>
+<a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a>            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<a id="__codelineno-11-35" name="__codelineno-11-35" href="#__codelineno-11-35"></a>
+<a id="__codelineno-11-36" name="__codelineno-11-36" href="#__codelineno-11-36"></a>            <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">terminated</span><span class="p">:</span>
+<a id="__codelineno-11-37" name="__codelineno-11-37" href="#__codelineno-11-37"></a>                <span class="k">break</span>
+<a id="__codelineno-11-38" name="__codelineno-11-38" href="#__codelineno-11-38"></a>
+<a id="__codelineno-11-39" name="__codelineno-11-39" href="#__codelineno-11-39"></a>        <span class="k">return</span> <span class="n">state</span>
+</code></pre></div>
+<hr />
+<h2 id="5-data-flow">5. Data Flow</h2>
+<h3 id="51-state-evolution">5.1 State Evolution</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>flowchart LR
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    S0[Initial State&lt;br/&gt;steps: []] 
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    S1[After Thought&lt;br/&gt;steps: [draft]]
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    S2[After Validate&lt;br/&gt;steps: [validated]]
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    S3[After Action&lt;br/&gt;steps: [executed]]
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    S4[After Commit&lt;br/&gt;steps: [committed]]
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    S0 --&gt;|ThoughtNode| S1
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    S1 --&gt;|ValidateNode| S2
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    S2 --&gt;|ActionNode| S3
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    S3 --&gt;|CommitNode| S4
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>    S4 --&gt;|Next cycle| S0
+</code></pre></div>
+<h3 id="52-information-flow">5.2 Information Flow</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>graph LR
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    User[User Query] --&gt; Runtime
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    Runtime --&gt; Graph
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    Graph --&gt; ThoughtNode
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    ThoughtNode --&gt; LLM[LLM API]
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    LLM --&gt; ThoughtNode
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    ThoughtNode --&gt; Graph
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    Graph --&gt; ActionNode
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    ActionNode --&gt; ToolRegistry
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    ToolRegistry --&gt; Tool[Tool.execute]
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    Tool --&gt; ExternalAPI[External API]
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    ExternalAPI --&gt; Tool
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    Tool --&gt; ActionNode
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>    ActionNode --&gt; Graph
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>    Graph --&gt; CheckpointMgr
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    CheckpointMgr --&gt; SQLite[(SQLite)]
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>    Graph --&gt; Memory
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>    Memory --&gt; VectorDB[(Vector DB)]
+</code></pre></div>
+<hr />
+<h2 id="6-extension-points">6. Extension Points</h2>
+<h3 id="61-custom-nodes">6.1 Custom Nodes</h3>
+<p><strong>How to Add</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.nodes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseNode</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCustomNode</span><span class="p">(</span><span class="n">BaseNode</span><span class="p">):</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ReActState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReActState</span><span class="p">:</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>        <span class="c1"># Custom logic</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>        <span class="k">return</span> <span class="n">updated_state</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="c1"># Register in graph</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="n">graph</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">()</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span> <span class="n">MyCustomNode</span><span class="p">())</span>
+</code></pre></div>
+<h3 id="62-custom-tools">6.2 Custom Tools</h3>
+<p><strong>How to Add</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.tools.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tool</span><span class="p">,</span> <span class="n">ToolResult</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyTool</span><span class="p">(</span><span class="n">Tool</span><span class="p">):</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_tool&quot;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Does X&quot;</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">perform_action</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>        <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="c1"># Register</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyTool</span><span class="p">())</span>
+</code></pre></div>
+<h3 id="63-custom-rules">6.3 Custom Rules</h3>
+<p><strong>How to Add</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.rules.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rule</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyRule</span><span class="p">(</span><span class="n">Rule</span><span class="p">):</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_rule&quot;</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">ReasoningStep</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>        <span class="k">return</span> <span class="n">custom_validation</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="64-custom-memory-backend">6.4 Custom Memory Backend</h3>
+<p><strong>How to Add</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo.memory.vector_store</span><span class="w"> </span><span class="kn">import</span> <span class="n">VectorStore</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyVectorStore</span><span class="p">(</span><span class="n">VectorStore</span><span class="p">):</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">upsert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">vector</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>        <span class="c1"># Custom implementation</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">,</span> <span class="n">top_k</span><span class="p">):</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>        <span class="c1"># Custom implementation</span>
+</code></pre></div>
+<hr />
+<h2 id="7-configuration-system">7. Configuration System</h2>
+<h3 id="71-config-hierarchy">7.1 Config Hierarchy</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># config/default.yaml (shipped with package)</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nt">engine</span><span class="p">:</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="nt">max_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="nt">checkpoint_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="c1"># config/user.yaml (user&#39;s custom config)</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="nt">engine</span><span class="p">:</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">  </span><span class="nt">max_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w">  </span><span class="c1"># Override default</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c1"># Environment variables (highest priority)</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="l l-Scalar l-Scalar-Plain">export ARKHON_RHEO_ENGINE_MAX_STEPS=100</span>
+</code></pre></div>
+<p><strong>Resolution Order</strong>: ENV &gt; user.yaml &gt; default.yaml</p>
+<h3 id="72-config-schema">7.2 Config Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">EngineConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>    <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>    <span class="n">checkpoint_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>    <span class="n">interruptible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">LLMConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>    <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>    <span class="n">engine</span><span class="p">:</span> <span class="n">EngineConfig</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>    <span class="n">llm</span><span class="p">:</span> <span class="n">LLMConfig</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>    <span class="n">tools</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ToolConfig</span><span class="p">]</span>
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>    <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RuleConfig</span><span class="p">]</span>
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a>    <span class="n">memory</span><span class="p">:</span> <span class="n">MemoryConfig</span>
+</code></pre></div>
+<hr />
+<h2 id="8-security-architecture">8. Security Architecture</h2>
+<h3 id="81-trust-boundaries">8.1 Trust Boundaries</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>graph TB
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    User[Trusted: User Code]
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    Agent[Trusted: Agent System]
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    Tool[Untrusted: Tool Execution]
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    External[Untrusted: External APIs]
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>    User --&gt;|Config| Agent
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>    Agent --&gt;|Sandboxed Call| Tool
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>    Tool --&gt;|Rate Limited| External
+</code></pre></div>
+<h3 id="82-sandboxing-strategy">8.2 Sandboxing Strategy</h3>
+<p><strong>Principles</strong>:</p>
+<ol>
+<li><strong>Least Privilege</strong>: Tools run with minimal permissions</li>
+<li><strong>Timeout Enforcement</strong>: All tool calls have 5s timeout</li>
+<li><strong>Resource Limits</strong>: Memory/CPU caps via cgroups</li>
+<li><strong>Input Validation</strong>: All tool inputs validated against JSON Schema</li>
+</ol>
+<p><strong>Implementation</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">execute_sandboxed</span><span class="p">(</span><span class="n">tool</span><span class="p">:</span> <span class="n">Tool</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="c1"># Validate inputs</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>    <span class="n">tool</span><span class="o">.</span><span class="n">validate_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    <span class="c1"># Execute in subprocess with restrictions</span>
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>        <span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="n">tool</span><span class="o">.</span><span class="n">generate_code</span><span class="p">(</span><span class="n">args</span><span class="p">)],</span>
+<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>        <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>        <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>        <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;HOME&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/sandbox&quot;</span><span class="p">},</span>  <span class="c1"># Isolated env</span>
+<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>        <span class="n">user</span><span class="o">=</span><span class="s2">&quot;sandbox_user&quot;</span><span class="p">,</span>  <span class="c1"># Non-root user</span>
+<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>    <span class="p">)</span>
+<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>
+<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>    <span class="k">return</span> <span class="n">parse_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="9-scalability-considerations">9. Scalability Considerations</h2>
+<h3 id="91-vertical-scaling">9.1 Vertical Scaling</h3>
+<p><strong>Current Bottlenecks</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Bottleneck</th>
+<th style="text-align: left;">Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LLM API</td>
+<td style="text-align: left;">Network latency</td>
+<td style="text-align: left;">Parallel calls, caching</td>
+</tr>
+<tr>
+<td style="text-align: left;">Vector DB</td>
+<td style="text-align: left;">Query latency</td>
+<td style="text-align: left;">HNSW index, quantization</td>
+</tr>
+<tr>
+<td style="text-align: left;">SQLite</td>
+<td style="text-align: left;">Write throughput</td>
+<td style="text-align: left;">WAL mode, batch writes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92-horizontal-scaling-future">9.2 Horizontal Scaling (Future)</h3>
+<p><strong>Distributed Execution</strong> (v0.3.0):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>graph LR
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>    Coordinator[Coordinator Agent]
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>    Worker1[Worker 1]
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>    Worker2[Worker 2]
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>    WorkerN[Worker N]
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>    Queue[(Task Queue)]
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>    Coordinator --&gt;|Enqueue| Queue
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>    Queue --&gt;|Dequeue| Worker1
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>    Queue --&gt;|Dequeue| Worker2
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>    Queue --&gt;|Dequeue| WorkerN
+</code></pre></div>
+<p><strong>Technologies</strong>:</p>
+<ul>
+<li>Task Queue: Celery / RQ</li>
+<li>Distributed State: Redis</li>
+<li>Coordination: Consul / etcd</li>
+</ul>
+<hr />
+<h2 id="10-migration-from-langgraph">10. Migration from LangGraph</h2>
+<h3 id="101-code-mapping">10.1 Code Mapping</h3>
+<p><strong>LangGraph:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>    <span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MyState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MyState</span><span class="p">:</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>    <span class="c1"># Process</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>    <span class="k">return</span> <span class="n">updated_state</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="n">graph</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MyState</span><span class="p">)</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">,</span> <span class="n">my_node</span><span class="p">)</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">initial</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Arkhon-Rheo:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">arkhon_rheo</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">FunctionNode</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyState</span><span class="p">:</span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>    <span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MyState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MyState</span><span class="p">:</span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>    <span class="c1"># Process (same logic)</span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>    <span class="k">return</span> <span class="n">updated_state</span>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="n">graph</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">()</span>
+<a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">,</span> <span class="n">FunctionNode</span><span class="p">(</span><span class="n">my_node</span><span class="p">))</span>
+<a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">,</span> <span class="s2">&quot;__end__&quot;</span><span class="p">)</span>
+<a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a><span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">initial</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Key Differences</strong>:</p>
+<ul>
+<li>Dataclasses instead of TypedDict (better type safety)</li>
+<li><code>run()</code> instead of <code>compile().invoke()</code> (simpler API)</li>
+<li>Built-in rule engine (optional in LangGraph)</li>
+</ul>
+<hr />
+<h2 id="11-observability-architecture">11. Observability Architecture</h2>
+<h3 id="111-logging-strategy">11.1 Logging Strategy</h3>
+<p><strong>Levels</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Level</th>
+<th style="text-align: left;">Usage</th>
+<th style="text-align: left;">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DEBUG</td>
+<td style="text-align: left;">Step-by-step execution</td>
+<td style="text-align: left;">"Entering ThoughtNode"</td>
+</tr>
+<tr>
+<td style="text-align: left;">INFO</td>
+<td style="text-align: left;">State transitions</td>
+<td style="text-align: left;">"Step 3 completed"</td>
+</tr>
+<tr>
+<td style="text-align: left;">WARNING</td>
+<td style="text-align: left;">Recoverable errors</td>
+<td style="text-align: left;">"Tool timeout, retrying"</td>
+</tr>
+<tr>
+<td style="text-align: left;">ERROR</td>
+<td style="text-align: left;">Unrecoverable errors</td>
+<td style="text-align: left;">"Rule violation, terminating"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Structured Logging</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="n">logger</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>    <span class="s2">&quot;node_executed&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>    <span class="n">node</span><span class="o">=</span><span class="s2">&quot;ThoughtNode&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>    <span class="n">step_id</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>    <span class="n">tokens_used</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>    <span class="n">duration_ms</span><span class="o">=</span><span class="mi">850</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="112-metrics">11.2 Metrics</h3>
+<p><strong>Key Metrics</strong>:</p>
+<ul>
+<li><code>react_steps_total</code> - Counter of reasoning steps</li>
+<li><code>node_latency_seconds</code> - Histogram of node execution time</li>
+<li><code>tool_calls_total</code> - Counter by tool name</li>
+<li><code>rule_violations_total</code> - Counter by rule name</li>
+<li><code>llm_tokens_used</code> - Counter of token consumption</li>
+</ul>
+<p><strong>Prometheus Export</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prometheus_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_http_server</span><span class="p">,</span> <span class="n">Counter</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="n">steps_counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s2">&quot;react_steps_total&quot;</span><span class="p">,</span> <span class="s2">&quot;Total reasoning steps&quot;</span><span class="p">)</span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="c1"># In node execution</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="n">steps_counter</span><span class="o">.</span><span class="n">inc</span><span class="p">()</span>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="c1"># Start metrics server</span>
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="n">start_http_server</span><span class="p">(</span><span class="mi">8000</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="12-testing-strategy">12. Testing Strategy</h2>
+<h3 id="121-test-architecture">12.1 Test Architecture</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>tests/
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>├── unit/              # Individual components
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>│   ├── test_state.py
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>│   ├── test_graph.py
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>│   └── test_rules.py
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>├── integration/       # Multi-component
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>│   ├── test_react_cycle.py
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>│   └── test_multi_agent.py
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>├── e2e/              # Full workflows
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>│   └── test_agent_workflow.py
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>└── fixtures/         # Shared test data
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>    └── conftest.py
+</code></pre></div>
+<h3 id="122-test-coverage-goals">12.2 Test Coverage Goals</h3>
+<ul>
+<li><strong>Unit</strong>: 95% line coverage</li>
+<li><strong>Integration</strong>: All critical paths</li>
+<li><strong>E2E</strong>: 3-5 realistic scenarios</li>
+</ul>
+<hr />
+<h3 id="end-of-architecture-document">End of Architecture Document</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

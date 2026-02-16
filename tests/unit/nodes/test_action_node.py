@@ -1,42 +1,79 @@
 import pytest
+import asyncio
 from unittest.mock import MagicMock
-from arkhon_rheo.core.state import ReActState
+from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.nodes.action_node import ActionNode
 
 
-def test_action_node_execution():
-    """Verify ActionNode executes tools and updates observation."""
+@pytest.mark.asyncio
+async def test_action_node_execution():
+    """Verify ActionNode executes tools and updates messages in AgentState."""
 
-    # Mock tool registry or mapping
+    # Mock tool
     mock_tool = MagicMock()
-    mock_tool.run.return_value = "File content found."
+    mock_tool.run = MagicMock(return_value="File content found.")
 
     tools = {"read_file": mock_tool}
 
     node = ActionNode(tools=tools)
 
-    # State with an action pending
-    # Assuming action format: "tool_name: input" or JSON
-    # For MVP simplicity, let's use "tool_name:input" string parsing
-    initial_state = ReActState(action="read_file:test.txt")
+    # In the new architecture, we look for tool calls in the last message
+    # or a specific format in shared_context/next_step.
+    # For this test, let's assume ActionNode extracts tool info from somewhere in state.
+    # Current implementation check: ActionNode usually takes a tool_call from the message.
 
-    new_state = node(initial_state)
+    initial_state: AgentState = {
+        "messages": [
+            {
+                "role": "assistant",
+                "content": "I will read the file.",
+                "tool_calls": [
+                    {
+                        "name": "read_file",
+                        "args": {"filename": "test.txt"},
+                        "id": "call_1",
+                    }
+                ],
+            }
+        ],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test",
+    }
+
+    new_state = await node(initial_state)
 
     # Verify tool execution
-    mock_tool.run.assert_called_with("test.txt")
+    assert mock_tool.run.called
 
-    # Verify observation update
-    assert new_state.observation == "File content found."
-    assert new_state.action is None  # Action should be cleared or marked done?
-    # Usually in ReAct, action stays until next thought clears it?
-    # Or we keep history in steps. Let's assume action field is current pending action.
+    # Verify message update (tool response appended)
+    assert len(new_state["messages"]) == 2
+    assert new_state["messages"][-1]["role"] == "tool"
+    assert new_state["messages"][-1]["content"] == "File content found."
 
 
-def test_action_node_invalid_tool():
+@pytest.mark.asyncio
+async def test_action_node_invalid_tool():
     """Verify handling of invalid tools."""
     node = ActionNode(tools={})
-    state = ReActState(action="unknown_tool:argument")
+    state: AgentState = {
+        "messages": [
+            {
+                "role": "assistant",
+                "content": "Use unknown",
+                "tool_calls": [{"name": "unknown_tool", "args": {}, "id": "call_2"}],
+            }
+        ],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test",
+    }
 
-    new_state = node(state)
+    new_state = await node(state)
 
-    assert "Error: Tool 'unknown_tool' not found" in new_state.observation
+    assert "Error" in new_state["messages"][-1]["content"]
+    assert "unknown_tool" in new_state["messages"][-1]["content"]
