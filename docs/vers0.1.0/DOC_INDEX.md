@@ -1,7 +1,7 @@
 # ReActEngine Documentation Index
 
 **Version**: 1.0.0  
-**Last Updated**: 2026-02-14
+**Last Updated**: 2026-02-16
 
 ---
 
@@ -20,6 +20,22 @@
 3. **[PHASE1_SKILLS.md](PHASE1_SKILLS.md)** - 每個 Sprint 的技能推薦（⭐ 新增）
 4. **[DEVGUIDE.md](DEVGUIDE.md)** - 開發環境設定
 5. **[TDD.md](TDD.md)** - 測試策略
+
+### 📌 Phase 2 (Multi-Agent) 快速入口
+
+**正在進行 Phase 2 開發？**閱讀順序：
+
+1. **[PHASE2_INDEX.md](PHASE2_INDEX.md)** - Phase 2 專屬索引（⭐ 新增）
+2. **[ROADMAP.md - Phase 2 詳細計劃](ROADMAP.md#milestone-2-multi-agent-architecture-phase-2---weeks-5-7)**
+3. **[PHASE2_SKILLS.md](PHASE2_SKILLS.md)** - 每個 Sprint 的技能推薦（⭐ 新增）
+
+### 📌 Phase 3 (Memory Systems) 快速入口
+
+**正在進行 Phase 3 開發？**閱讀順序：
+
+1. **[PHASE3_INDEX.md](PHASE3_INDEX.md)** - Phase 3 專屬索引（⭐ 新增）
+2. **[ROADMAP.md - Phase 3 詳細計劃](ROADMAP.md#milestone-3-memory-systems-phase-3---weeks-8-10)**
+3. **[PHASE3_SKILLS.md](PHASE3_SKILLS.md)** - 每個 Sprint 的技能推薦（⭐ 新增）
 
 ---
 
@@ -103,9 +119,9 @@
 | Phase | Primary Reference | Supporting Docs |
 | :--- | :--- | :--- |
 | **Phase 0: Initialization** | [DEVGUIDE.md §1](./DEVGUIDE.md) | [SPECIFICATION.md §5](./SPECIFICATION.md) |
-| **Phase 1: Foundation** | **[PHASE1_INDEX.md](./PHASE1_INDEX.md)** (⭐ 新增) | [ROADMAP.md](./ROADMAP.md), [DEVGUIDE.md](./DEVGUIDE.md), [TDD.md](./TDD.md), **[PHASE1_SKILLS.md](./PHASE1_SKILLS.md)** (⭐ 新增) |
-| Phase 2: Multi-Agent | [ROADMAP.md §Phase 2](./ROADMAP.md) | ARCHITECTURE.md §Multi-agent, STATE_MACHINE.md |
-| Phase 3: Memory Systems | [ROADMAP.md §Phase 3](./ROADMAP.md) | ARCHITECTURE.md §Memory, DESIGN.md |
+| **Phase 1: Foundation** | **[PHASE1_INDEX.md](./PHASE1_INDEX.md)** | [ROADMAP.md](./ROADMAP.md), **[PHASE1_SKILLS.md](./PHASE1_SKILLS.md)** |
+| **Phase 2: Multi-Agent** | **[PHASE2_INDEX.md](./PHASE2_INDEX.md)** (⭐ 新增) | [ROADMAP.md](./ROADMAP.md), **[PHASE2_SKILLS.md](./PHASE2_SKILLS.md)** (⭐ 新增), ARCHITECTURE.md §Multi-agent |
+| **Phase 3: Memory Systems** | **[PHASE3_INDEX.md](./PHASE3_INDEX.md)** (⭐ 新增) | [ROADMAP.md](./ROADMAP.md), **[PHASE3_SKILLS.md](./PHASE3_SKILLS.md)** (⭐ 新增), ARCHITECTURE.md §Memory |
 | Phase 4: Release Preparation | [ROADMAP.md §Phase 4](./ROADMAP.md) | DEVGUIDE.md §Deployment/Publishing |
 | Phase 5: Memory | SPECIFICATION.md §4.3-4.4 | ARCHITECTURE.md §4.5 |
 | :--- | :--- | :--- |

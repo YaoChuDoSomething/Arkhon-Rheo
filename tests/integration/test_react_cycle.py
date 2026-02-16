@@ -7,7 +7,11 @@ from arkhon_rheo.nodes.validate_node import ValidateNode
 from arkhon_rheo.nodes.commit_node import CommitNode
 
 
-def test_full_react_cycle():
+import pytest
+
+
+@pytest.mark.asyncio
+async def test_full_react_cycle():
     # 1. Initialize State and Graph
     initial_state = ReActState()
     graph = StateGraph(initial_state)
@@ -28,7 +32,7 @@ def test_full_react_cycle():
     # Commit is end node
 
     # 4. Run
-    final_state = graph.run("thought")
+    final_state = await graph.run("thought")
 
     # 5. Verify Final State
     assert final_state.thought == "I should check the system status."
