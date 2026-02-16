@@ -1,0 +1,48 @@
+site_name: Arkhon-Rheo
+site_description: A sophisticated multi-agent orchestration framework built on LangGraph and Google GenAI.
+site_author: Yao Chu
+site_url: https://arkhon-rheo.ai/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+    - scheme: slate
+      primary: black
+      accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
+  - Architecture: architecture.md
+  - CLI Reference: cli_reference.md
+  - Examples:
+      - Simple Agent: examples/simple.md
+      - Multi-Agent Orchestration: examples/multi_agent.md
+  - API Reference: reference/index.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - stylesheets/extra.css
+
+repo_name: YaoChuDoSomething/arkhon-rheo
+repo_url: https://github.com/YaoChuDoSomething/arkhon-rheo
+edit_uri: edit/main/docs/

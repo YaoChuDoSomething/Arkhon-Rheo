@@ -5,7 +5,7 @@ description = "A sophisticated multi-agent orchestration framework built on Lang
 readme = "README.md"
 requires-python = ">=3.12"
 authors = [
-    { name = "Yao Chu", email = "yaochu@example.com" },
+    { name = "Yao-Chu Wu", email = "yaochuwu.tw@gmail.com" },
 ]
 maintainers = [
     { name = "Arkhon-Rheo Maintainers", email = "maintainers@arkhon-rheo.ai" },
