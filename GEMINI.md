@@ -1,5 +1,6 @@
 # RULES for Arkhon-Rheo Project 實現自動化SOP式的AI代理開發流程
 
+* 主要開發流程技能@tdd-development @workflow-automation
 * 禁止使用 micromamba、mypy 指令，必須使用 uv, uvx, pytest, pytest-cov, ruff, ty, radon
 * markdown文件需要在撰寫完成後立刻使用linting
 * python程式文件在sprint之前要執行linting

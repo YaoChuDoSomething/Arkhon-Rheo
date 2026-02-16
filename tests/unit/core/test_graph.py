@@ -23,6 +23,9 @@ def test_graph_execution_flow():
     graph.add_edge("A", "B")
 
     # Run step by step
+    # Note: execute_step might return the next node ID or the new state?
+    # Based on ReAct pattern, often we run until termination.
+    # But for now let's assume granular control: execute_step(node_id) -> next_node_id
     next_node = graph.execute_step("A")
     assert next_node == "B"
     assert graph.current_state.thought == "Thought from A"
@@ -45,5 +48,6 @@ def test_graph_run_loop():
     # Self loop for testing max steps
     graph.add_edge("A", "A")
 
+    # This should run A 5 times and stop
     final_state = graph.run("A", max_steps=5)
     assert final_state.metadata["count"] == 5

@@ -12,7 +12,8 @@ Phase 1 的開發流程導向文件，按重要性排序：
 
 | # | 文件 | 用途 | 何時使用 |
 | :--- | :--- | :--- | :--- |
-| 1 | [ROADMAP.md](./ROADMAP.md#milestone-1-foundation-phase-1---weeks-1-4) | Phase 1 詳細計劃和里程碑 | 了解 Sprint 目標和交付物 |
+| 1 | [**IMPLEMENTATION_FLOW.md**](./oop/IMPLEMENTATION_FLOW.md) | **開發流程指南** | **每個 Sprint 開始時必讀** (連接 Roadmap 與 OOP 設計) |
+| 2 | [ROADMAP.md](./ROADMAP.md#milestone-1-foundation-phase-1---weeks-1-4) | Phase 1 詳細計劃和里程碑 | 了解 Sprint 目標和交付物 |
 | 2 | [PHASE1_SKILLS.md](./PHASE1_SKILLS.md) | 每個 Sprint 的技能推薦 | 選擇和學習相關技能 |
 | 3 | [DEVGUIDE.md](./DEVGUIDE.md) | 開發環境設定和工作流程 | 設定開發環境、日常開發 |
 | 4 | [TDD.md](./TDD.md) | 測試驅動開發策略 | 撰寫測試、TDD 工作流程 |

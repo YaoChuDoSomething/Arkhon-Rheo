@@ -54,7 +54,9 @@ graph TD
 
 ## 🚀 快速實作指南 (Phase 1)
 
-對於準備開始編寫程式碼的開發者，建議遵循以下順序：
+對於準備開始編寫程式碼的開發者，**請首先閱讀 [Implementation Flow](IMPLEMENTATION_FLOW.md)**。
+
+建議遵循以下順序：
 
 1. **定義元數據**: 實作 `ReasoningStep` 與不可變的 `ReActState`。
 2. **建立執行圖**: 實作 `StateGraph` 的節點管理與邊緣跳轉邏輯。
