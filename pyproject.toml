@@ -1,9 +1,23 @@
 [project]
 name = "arkhon-rheo"
 version = "0.1.0"
-description = "Add your description here"
+description = "A sophisticated multi-agent orchestration framework built on LangGraph and Google GenAI."
 readme = "README.md"
 requires-python = ">=3.12"
+authors = [
+    { name = "Yao Chu", email = "yaochu@example.com" },
+]
+maintainers = [
+    { name = "Arkhon-Rheo Maintainers", email = "maintainers@arkhon-rheo.ai" },
+]
+keywords = ["multi-agent", "orchestration", "langgraph", "gemini", "ai-agent", "tdd"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
     "gemma>=3.3.0",
     "google-genai>=1.63.0",
@@ -17,7 +31,11 @@ dependencies = [
     "pydantic>=2.12.5",
     "pyyaml>=6.0.3",
     "structlog>=25.5.0",
+    "click>=8.1.7",
 ]
+
+[project.scripts]
+arkhon-rheo = "arkhon_rheo.cli.main:main"
 
 [dependency-groups]
 dev = [
@@ -36,6 +54,3 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 norecursedirs = ["repos"]
-
-
-
