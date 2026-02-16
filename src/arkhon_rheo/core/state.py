@@ -73,8 +73,14 @@ class ReActState:
         return replace(self, observation=observation)
 
     def with_metadata(self, metadata: Dict[str, Any]) -> "ReActState":
-        """Return a new state with updated metadata."""
+        """Return a new state with replaced metadata."""
         return replace(self, metadata=metadata)
+
+    def update_metadata(self, updates: Dict[str, Any]) -> "ReActState":
+        """Return a new state with updated metadata (merged)."""
+        new_metadata = dict(self.metadata)
+        new_metadata.update(updates)
+        return replace(self, metadata=new_metadata)
 
     def add_step(self, step: ReasoningStep) -> "ReActState":
         """Return a new state with the step added to history."""

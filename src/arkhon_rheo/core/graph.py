@@ -1,5 +1,4 @@
-from typing import Dict, Any, Callable, Optional, List
-from dataclasses import dataclass, field
+from typing import Dict, Callable, Optional
 from arkhon_rheo.core.state import ReActState
 
 # Type alias for a node function
@@ -34,7 +33,7 @@ class StateGraph:
             raise ValueError(f"Target node '{target}' not found.")
         self._edges[source] = target
 
-    def execute_step(self, node_name: str) -> Optional[str]:
+    async def execute_step(self, node_name: str) -> Optional[str]:
         """
         Execute a single node and return the name of the next node.
         Updates internal current_state.
@@ -44,12 +43,20 @@ class StateGraph:
 
         # Execute node function
         func = self._nodes[node_name]
-        self._current_state = func(self._current_state)
+        result = func(self._current_state)
+
+        # Check if result is a coroutine
+        import inspect
+
+        if inspect.iscoroutine(result):
+            self._current_state = await result
+        else:
+            self._current_state = result
 
         # Determine next node
         return self._edges.get(node_name)
 
-    def run(self, start_node: str, max_steps: int = 10) -> ReActState:
+    async def run(self, start_node: str, max_steps: int = 10) -> ReActState:
         """
         Run the graph starting from start_node until termination or max_steps.
         Returns the final state.
@@ -58,7 +65,7 @@ class StateGraph:
         steps = 0
 
         while current_node and steps < max_steps:
-            current_node = self.execute_step(current_node)
+            current_node = await self.execute_step(current_node)
             steps += 1
 
         return self._current_state
