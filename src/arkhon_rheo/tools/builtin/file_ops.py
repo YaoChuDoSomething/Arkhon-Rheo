@@ -1,31 +1,29 @@
-from typing import Optional
-from pydantic import BaseModel, Field
-from arkhon_rheo.tools.base import BaseTool
-
-
-class FileOpsInput(BaseModel):
-    operation: str = Field(description="Operation to perform: 'read' or 'write'")
-    file_path: str = Field(description="Path to the file")
-    content: Optional[str] = Field(
-        default=None, description="Content to write (required for 'write')"
-    )
+import os
+from arkhon_rheo.core.tools.base import BaseTool
 
 
 class FileOpsTool(BaseTool):
     name = "file_ops"
-    description = "Read or write files to the local filesystem."
-    args_schema = FileOpsInput
+    description = (
+        "Read or write files. Input format: 'read:path' or 'write:path:content'"
+    )
 
-    def run(self, operation: str, file_path: str, content: Optional[str] = None) -> str:  # type: ignore[override]
-        # Security: In real production, we must sandbox this to a specific directory.
-        # For this exercise, we assume it's running in a controlled env.
+    def run(self, input: str) -> str:
+        parts = input.split(":", 2)
+        operation = parts[0].strip()
+
+        if len(parts) < 2:
+            return "Error: Invalid input format. Expected 'operation:path'"
+
+        file_path = parts[1].strip()
+        content = parts[2] if len(parts) > 2 else None
 
         if operation == "read":
             try:
+                if not os.path.exists(file_path):
+                    return f"Error: File '{file_path}' not found."
                 with open(file_path, "r") as f:
                     return f.read()
-            except FileNotFoundError:
-                return f"Error: File '{file_path}' not found."
             except Exception as e:
                 return f"Error reading file: {str(e)}"
 

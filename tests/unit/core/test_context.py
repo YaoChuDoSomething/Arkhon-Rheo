@@ -1,44 +1,38 @@
-from uuid import UUID
+import pytest
 from arkhon_rheo.core.context import ContextManager
+import threading
 
 
-def test_context_initialization():
+def test_context_set_get():
+    """Verify basic set and get functionality."""
     ctx = ContextManager()
-    assert ctx.trace_id is not None
-    assert ctx.session_id is not None
-    assert ctx.created_at is not None
-    # Validate UUID format
-    assert UUID(ctx.trace_id)
-    assert UUID(ctx.session_id)
+    ctx.set("trace_id", "12345")
+    assert ctx.get("trace_id") == "12345"
+    assert ctx.get("non_existent") is None
 
 
-def test_metadata_operations():
+def test_context_thread_isolation():
+    """Verify that context is isolated between threads."""
     ctx = ContextManager()
-    ctx.add_metadata("user", "test_user")
-    ctx.add_metadata("role", "admin")
+    ctx.set("user", "main_thread")
 
-    assert ctx.get_metadata("user") == "test_user"
-    assert ctx.get_metadata("role") == "admin"
-    assert ctx.get_metadata("missing") is None
-    assert ctx.get_metadata("missing", "default") == "default"
+    def worker():
+        # Should be empty in new thread
+        assert ctx.get("user") is None
+        ctx.set("user", "worker_thread")
+        assert ctx.get("user") == "worker_thread"
+
+    t = threading.Thread(target=worker)
+    t.start()
+    t.join()
+
+    # Main thread should be unchanged
+    assert ctx.get("user") == "main_thread"
 
 
-def test_get_all_metadata():
+def test_context_clear():
+    """Verify clear functionality."""
     ctx = ContextManager()
-    ctx.add_metadata("key", "value")
-
-    all_meta = ctx.get_all_metadata()
-    assert all_meta["trace_id"] == ctx.trace_id
-    assert all_meta["session_id"] == ctx.session_id
-    assert "created_at" in all_meta
-    assert all_meta["key"] == "value"
-
-
-def test_new_trace():
-    ctx = ContextManager()
-    old_trace = ctx.trace_id
-    new_trace = ctx.new_trace()
-
-    assert old_trace != new_trace
-    assert ctx.trace_id == new_trace
-    assert UUID(new_trace)
+    ctx.set("key", "value")
+    ctx.clear()
+    assert ctx.get("key") is None

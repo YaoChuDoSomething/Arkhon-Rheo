@@ -1,3 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.env
+.venv/
+!.venv/bin/activate
+.research/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -54,7 +68,7 @@ cover/
 
 # Project Specific
 repos/
-.agent/
+#.agent/
 file_summary.txt
 mdlist.txt
 gemini_exec_history.json

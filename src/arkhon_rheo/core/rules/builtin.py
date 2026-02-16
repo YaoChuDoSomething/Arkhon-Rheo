@@ -1,4 +1,4 @@
-from arkhon_rheo.rules.base import BaseRule
+from arkhon_rheo.core.rules.base import BaseRule
 from arkhon_rheo.core.state import ReActState
 from typing import Optional
 
