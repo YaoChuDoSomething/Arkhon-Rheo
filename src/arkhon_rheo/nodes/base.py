@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 import logging
-from arkhon_rheo.core.state import ReActState
+from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.context import ContextManager
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ class BaseNode(ABC):
     def __init__(self, context: Optional[ContextManager] = None):
         self.context = context or ContextManager()
 
-    def __call__(self, state: ReActState) -> ReActState:
+    def __call__(self, state: AgentState) -> AgentState:
         """Entry point for the node execution."""
         try:
             self.before_execute(state)
@@ -29,15 +29,15 @@ class BaseNode(ABC):
             # For now re-raise to fail fast during dev
             raise e
 
-    def before_execute(self, state: ReActState) -> None:
+    def before_execute(self, state: AgentState) -> None:
         """Hook to run before execution logic."""
         logger.debug(f"Entering {self.__class__.__name__}")
 
     @abstractmethod
-    def execute(self, state: ReActState) -> ReActState:
+    def execute(self, state: AgentState) -> AgentState:
         """Core logic of the node. Must be implemented by subclasses."""
         pass
 
-    def after_execute(self, state: ReActState) -> None:
+    def after_execute(self, state: AgentState) -> None:
         """Hook to run after execution logic."""
         logger.debug(f"Exiting {self.__class__.__name__}")
