@@ -68,3 +68,4 @@ class RuntimeScheduler:
         curr = entry_point
         while curr != "END" and not initial_state.get("is_completed"):
             curr = await self.step(curr, initial_state)
+        return initial_state

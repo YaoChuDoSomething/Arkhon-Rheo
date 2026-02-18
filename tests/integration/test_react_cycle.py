@@ -1,5 +1,7 @@
-from arkhon_rheo.core.state import ReActState
-from arkhon_rheo.core.graph import StateGraph
+import pytest
+from arkhon_rheo.core.state import AgentState
+from arkhon_rheo.core.graph import Graph
+from arkhon_rheo.core.runtime.scheduler import RuntimeScheduler
 from arkhon_rheo.nodes.thought_node import ThoughtNode
 from arkhon_rheo.nodes.action_node import ActionNode
 from arkhon_rheo.nodes.observation_node import ObservationNode
@@ -7,14 +9,18 @@ from arkhon_rheo.nodes.validate_node import ValidateNode
 from arkhon_rheo.nodes.commit_node import CommitNode
 
 
-import pytest
-
-
 @pytest.mark.asyncio
 async def test_full_react_cycle():
     # 1. Initialize State and Graph
-    initial_state = ReActState()
-    graph = StateGraph(initial_state)
+    initial_state: AgentState = {
+        "messages": [],
+        "next_step": "",
+        "shared_context": {},
+        "is_completed": False,
+        "errors": [],
+        "thread_id": "test_thread",
+    }
+    graph = Graph()
 
     # 2. Add Nodes
     graph.add_node("thought", ThoughtNode())
@@ -29,14 +35,20 @@ async def test_full_react_cycle():
     graph.add_edge("action", "observation")
     graph.add_edge("observation", "validate")
     graph.add_edge("validate", "commit")
-    # Commit is end node
+    graph.add_edge("commit", "__end__")
 
-    # 4. Run
-    final_state = await graph.run("thought")
+    # 4. Run using RuntimeScheduler
+    scheduler = RuntimeScheduler(graph, checkpoint_manager=None)
+    await scheduler.run(initial_state, "thought")
 
     # 5. Verify Final State
-    assert final_state.thought == "I should check the system status."
-    assert final_state.action == "check_status()"
-    assert final_state.observation == "Status: OK"
-    assert final_state.metadata.get("valid") is True
-    assert final_state.metadata.get("committed") is True
+    # Note: messages are appended
+    assert any(
+        "check the system status" in m["content"] for m in initial_state["messages"]
+    )
+    assert any(
+        "Action: check_status()" in m["content"] for m in initial_state["messages"]
+    )
+    assert any("Status: OK" in m["content"] for m in initial_state["messages"])
+    assert initial_state["shared_context"].get("valid") is True
+    assert initial_state["shared_context"].get("committed") is True
