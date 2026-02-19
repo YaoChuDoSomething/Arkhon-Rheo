@@ -1,20 +1,28 @@
-# Arkhon-Rheo
+# Arkhon-Rheo Documentation
 
-**Arkhon-Rheo** (Ancient Greek: *ἄρχων* "ruler" + *ῥέω* "to flow") is a sophisticated multi-agent orchestration framework designed for building reliable, scalable, and complex AI systems using **LangGraph** and **Google GenAI**.
+Welcome to the official documentation for **Arkhon-Rheo**, a multi-agent orchestration framework designed for production-grade reliability and governance.
 
-## Key Features
+## 🧭 Navigation
 
-- 🧩 **Modular Orchestration**: Easily compose multiple agents into complex workflows.
-- 🧠 **Recursive Memory**: Built-in summarization and hierarchical memory systems.
-- 🛠️ **Seamless Tooling**: Plug-and-play tool registry for external API integration.
-- ⚡ **First-Class TDD**: Designed with testing in mind, ensuring your agentic flows are deterministic and robust.
-- 🚀 **Developer-First CLI**: Accelerate your development cycle from initialization to production.
+### 🚀 Getting Started
 
-## Getting Started
+- **[Philosophy](overview/philosophy.md)**: Why we built Arkhon-Rheo.
+- **[Getting Started](user-guide/getting-started.md)**: Installation and first agent.
+- **[Roadmap](overview/roadmap.md)**: Current status and future plans.
 
-Ready to flow? Check out the [Getting Started](getting_started.md) guide.
+### 🛠️ User Guide
 
-```bash
-pip install arkhon-rheo
-arkhon-rheo init my-awesome-project
-```
+- **[CLI Reference](user-guide/cli-reference.md)**: Mastering the command line.
+- **[Examples](user-guide/examples/simple.md)**: Sample workflows (Multi-Agent, RACI Matrix).
+
+### 🏗️ Design & Architecture
+
+- **[Architecture Overview](design-architecture/architecture-overview.md)**: System layers and data flow.
+- **[API References](design-architecture/registry-api.md)**: Registries, Nodes, and Tools.
+- **[Security & Governance](design-architecture/rules.md)**: Protecting your workflows.
+
+### 💻 Developer Hub
+
+- **[Contributor Guide](dev-notes/dev-guide.md)**: Workflow and standards.
+- **[TDD Strategy](dev-notes/tdd-strategy.md)**: Writing reliable agent tests.
+- **[Migration Guide](dev-notes/migration-guide.md)**: From legacy systems to Arkhon-Rheo.

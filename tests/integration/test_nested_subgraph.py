@@ -1,9 +1,9 @@
 import pytest
-import asyncio
-from arkhon_rheo.core.subgraph import SubGraph
+
 from arkhon_rheo.core.graph import Graph
-from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.runtime.scheduler import RuntimeScheduler
+from arkhon_rheo.core.state import AgentState
+from arkhon_rheo.core.subgraph import SubGraph
 
 
 @pytest.fixture

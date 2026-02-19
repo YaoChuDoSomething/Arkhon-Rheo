@@ -21,5 +21,6 @@
         "*.mmd": "mermaid"
     },
     "debugpy.debugJustMyCode": true,
-    "debugpy.showPythonInlineValues": false
+    "debugpy.showPythonInlineValues": false,
+    "geminicodeassist.outlines.automaticOutlineGeneration": true
 }

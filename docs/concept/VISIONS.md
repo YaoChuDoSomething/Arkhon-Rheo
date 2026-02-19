@@ -54,8 +54,8 @@ arkhon-rheo/
 │   │   └── loader.py           # (Phase 4/Config) Configuration Loader
 │   ├── core/
 │   │   ├── __init__.py
-│   │   ├── state.py            # (Phase 1) ReActState, ReasoningStep
-│   │   └── graph.py            # (Phase 1) StateGraph Engine
+│   │   ├── state.py            # (Phase 1) AgentState, ReasoningStep
+│   │   └── graph.py            # (Phase 1) Graph Engine
 │   ├── memory/
 │   │   ├── __init__.py
 │   │   ├── context_window.py   # (Phase 5) Short-term memory
@@ -105,8 +105,7 @@ arkhon-rheo/
 
 ## 關鍵差異摘要
 
-1.  **檔案填充**：原本空的 `arkhon_rheo/` 子目錄現在填滿了具體的 `.py` 實作檔（如 `state.py`, `thought_node.py`）。
-2.  **設定檔**：新增了 `config/default.yaml` 用於控制 Agent 行為。
-3.  **發布產物**：新增了 `dist/`（用於 PyPI 發布）、`docs/`（文件）和 `examples/`（範例）。
-4.  **測試完整性**：`tests/` 目錄結構會隨著每個 Phase 的 TDD 流程而擴充，對應到原始碼的每個模組。
-
+1. **檔案填充**：原本空的 `arkhon_rheo/` 子目錄現在填滿了具體的 `.py` 實作檔（如 `state.py`, `thought_node.py`）。
+2. **設定檔**：新增了 `config/default.yaml` 用於控制 Agent 行為。
+3. **發布產物**：新增了 `dist/`（用於 PyPI 發布）、`docs/`（文件）和 `examples/`（範例）。
+4. **測試完整性**：`tests/` 目錄結構會隨著每個 Phase 的 TDD 流程而擴充，對應到原始碼的每個模組。

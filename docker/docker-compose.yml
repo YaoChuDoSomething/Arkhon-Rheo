@@ -1,0 +1,16 @@
+services:
+  arkhon-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ..:/app
+      # Example: Mount external project for ACL testing
+      # - /path/to/external/project:/external-data
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Configure allowed directories for FileOpsTool (comma-separated if using custom env var logic in future)
+      # Currently, ACL is configured via arkhon_rheo.config or arguments.
+      # If using config file:
+      # - ARKHON_CONFIG=/app/config.yaml
+    command: tail -f /dev/null # Keep container running for exec

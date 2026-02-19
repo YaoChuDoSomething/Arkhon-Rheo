@@ -1,8 +1,9 @@
+from unittest.mock import MagicMock
+
 import pytest
-import asyncio
-from unittest.mock import MagicMock, AsyncMock
+
 from arkhon_rheo.core.state import AgentState
-from arkhon_rheo.core.nodes.thought_node import ThoughtNode
+from arkhon_rheo.nodes.thought_node import ThoughtNode
 
 
 @pytest.mark.asyncio

@@ -1,4 +1,5 @@
 import asyncio
+
 from arkhon_rheo.core.agent import Agent
 from arkhon_rheo.core.message import AgentMessage
 
@@ -6,11 +7,16 @@ from arkhon_rheo.core.message import AgentMessage
 class SimpleMathAgent(Agent):
     """An agent that performs basic arithmetic reasoning."""
 
-    async def process_message(self, message: AgentMessage) -> str:
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.last_response = ""
+
+    async def process_message(self, message: AgentMessage) -> None:
         content = message.content.lower()
         if "add" in content:
-            return "Thinking... I should add these numbers."
-        return f"Echoing back: {message.content}"
+            self.last_response = "Thinking... I should add these numbers."
+        else:
+            self.last_response = f"Echoing back: {message.content}"
 
 
 async def main():
@@ -23,7 +29,8 @@ async def main():
     )
 
     print(f"User: {request.content}")
-    response = await agent.process_message(request)
+    await agent.process_message(request)
+    response = agent.last_response
     print(f"MathBot: {response}")
 
 

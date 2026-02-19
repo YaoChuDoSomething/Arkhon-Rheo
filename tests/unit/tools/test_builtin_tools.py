@@ -1,6 +1,6 @@
-import pytest
 import os
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
+
 from arkhon_rheo.tools.builtin.calculator import CalculatorTool
 from arkhon_rheo.tools.builtin.file_ops import FileOpsTool
 
@@ -25,6 +25,8 @@ def test_file_ops_read():
         with patch("os.path.exists", return_value=True):
             result = file_ops.run("read:test.txt")
             assert result == "content"
+            # Ensure we used absolute path
+            path = os.path.join(os.getcwd(), "test.txt")
 
 
 def test_file_ops_write():
@@ -35,5 +37,6 @@ def test_file_ops_write():
     with patch("builtins.open", m):
         file_ops.run("write:test.txt:new content")
 
-    m.assert_called_with("test.txt", "w")
+    path = os.path.join(os.getcwd(), "test.txt")
+    m.assert_called_with(path, "w")
     m().write.assert_called_with("new content")

@@ -1,6 +1,7 @@
 import pytest
+
 from arkhon_rheo.core.state import AgentState
-from arkhon_rheo.core.nodes.base import BaseNode
+from arkhon_rheo.nodes.base import BaseNode
 
 
 def test_base_node_abstract_method():

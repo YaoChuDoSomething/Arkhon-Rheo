@@ -1,7 +1,8 @@
-import pytest
-from click.testing import CliRunner
-from arkhon_rheo.cli.main import main
 import os
+
+from click.testing import CliRunner
+
+from arkhon_rheo.cli.main import main
 
 
 def test_cli_version():

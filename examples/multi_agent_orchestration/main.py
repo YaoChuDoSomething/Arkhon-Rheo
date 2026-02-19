@@ -1,20 +1,29 @@
 import asyncio
 from dataclasses import asdict
+
 from arkhon_rheo.core.agent import Agent
-from arkhon_rheo.core.message import AgentMessage
 from arkhon_rheo.core.graph import Graph
-from arkhon_rheo.core.state import AgentState
+from arkhon_rheo.core.message import AgentMessage
 from arkhon_rheo.core.runtime.scheduler import RuntimeScheduler
+from arkhon_rheo.core.state import AgentState
 
 
 class Researcher(Agent):
-    async def process_message(self, message: AgentMessage) -> str:
-        return f"Research results for: {message.content}"
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.last_result = ""
+
+    async def process_message(self, message: AgentMessage) -> None:
+        self.last_result = f"Research results for: {message.content}"
 
 
 class Writer(Agent):
-    async def process_message(self, message: AgentMessage) -> str:
-        return f"Draft based on: {message.content}"
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.last_result = ""
+
+    async def process_message(self, message: AgentMessage) -> None:
+        self.last_result = f"Draft based on: {message.content}"
 
 
 async def research_node(state: AgentState):
@@ -23,7 +32,8 @@ async def research_node(state: AgentState):
     last_msg_dict = state["messages"][-1]
     last_msg = AgentMessage(**last_msg_dict)
 
-    res = await agent.process_message(last_msg)
+    await agent.process_message(last_msg)
+    res = agent.last_result
 
     new_msg = AgentMessage(
         sender="researcher", receiver="writer", content=res, type="info"
@@ -36,7 +46,8 @@ async def write_node(state: AgentState):
     last_msg_dict = state["messages"][-1]
     last_msg = AgentMessage(**last_msg_dict)
 
-    res = await agent.process_message(last_msg)
+    await agent.process_message(last_msg)
+    res = agent.last_result
 
     new_msg = AgentMessage(sender="writer", receiver="user", content=res, type="info")
     return {"messages": [asdict(new_msg)], "is_completed": True}

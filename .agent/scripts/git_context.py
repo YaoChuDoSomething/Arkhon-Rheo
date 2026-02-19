@@ -31,7 +31,7 @@ def get_imports(file_path):
             elif isinstance(node, ast.ImportFrom):
                 if node.module:
                     imports.add(node.module.split(".")[0])
-    except:
+    except Exception:
         pass
     return list(imports)
 
