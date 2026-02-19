@@ -7,12 +7,17 @@ component migration.
 
 from __future__ import annotations
 
-import os
+import asyncio
+import re
 import sys
+from pathlib import Path
 
 import click
 
 from arkhon_rheo.cli.migrate import migrate_agent, migrate_subgraph
+from arkhon_rheo.config.raci_loader import load_raci_config
+from arkhon_rheo.orchestrator.meta_graph import meta_orchestrator_graph
+from arkhon_rheo.workflows.base import build_state
 
 
 @click.group()
@@ -33,40 +38,55 @@ def init(name: str) -> None:
     Args:
         name: The name of the new project to create.
     """
-    if os.sep in name or ".." in name:
-        click.echo(
-            f"Error: Invalid project name '{name}'. cannot contain path separators or '..'."
-        )
+    if not re.match(r"^[a-zA-Z0-9_-]+$", name):
+        click.echo(f"Error: Invalid project name '{name}'. Only letters, digits, hyphens, and underscores are allowed.")
         sys.exit(1)
 
+    target_path = Path(name)
+
     click.echo(f"🚀 Initializing Arkhon-Rheo project: {name}...")
-    os.makedirs(name, exist_ok=True)
-    os.makedirs(os.path.join(name, "agents"), exist_ok=True)
-    os.makedirs(os.path.join(name, "tools"), exist_ok=True)
-    with open(os.path.join(name, "pyproject.toml"), "w") as f:
+    (target_path / "agents").mkdir(parents=True, exist_ok=True)
+    (target_path / "tools").mkdir(parents=True, exist_ok=True)
+
+    with (target_path / "pyproject.toml").open("w") as f:
         f.write(f'[project]\nname = "{name}"\nversion = "0.1.0"\n')
     click.echo("✨ Done.")
 
 
 @main.command()
-@click.option(
-    "--config", default="workflow.yaml", help="Path to workflow configuration."
-)
+@click.option("--config", default="workflow.yaml", help="Path to workflow configuration.")
 def run(config: str) -> None:
     """Run an Arkhon-Rheo workflow using a configuration file.
 
     Args:
         config: Path to the YAML file defining the workflow.
     """
-    click.echo(f"Running workflow with config: {config}")
-    # Implementation placeholder
-    pass
+    click.echo(f"🚀 Running Arkhon-Rheo workflow with config: {config}")
+
+    try:
+        load_raci_config(config)
+        prompt = click.prompt("Enter task description")
+
+        state = build_state(prompt)
+
+        # Execute Meta-Orchestrator
+        click.echo("🧠 Evaluating task complexity and selecting RACI scheme...")
+        result = asyncio.run(meta_orchestrator_graph.ainvoke(state))
+
+        click.echo("✅ Workflow completed.")
+        selected = result["shared_context"].get("selected_scheme")
+        click.echo(f"🎯 Selected Scheme: {selected}")
+        click.echo(f"📝 Reasoning: {result['shared_context'].get('evaluation_reasoning')}")
+
+    except Exception as e:
+        click.echo(f"❌ Error: {e}")
+        sys.exit(1)
 
 
 @main.command()
 @click.argument("target")
-@click.option("--type", type=click.Choice(["subgraph", "agent"]), default="subgraph")
-def migrate(target: str, type: str) -> None:
+@click.option("--type", "target_type", type=click.Choice(["subgraph", "agent"]), default="subgraph")
+def migrate(target: str, target_type: str) -> None:
     """Migrate LangGraph components to Arkhon-Rheo.
 
     Translates existing LangGraph node/edge logic into Arkhon-Rheo compatibles.
@@ -75,7 +95,7 @@ def migrate(target: str, type: str) -> None:
         target: The file or directory to migrate.
         type: The type of component being migrated ('subgraph' or 'agent').
     """
-    if type == "subgraph":
+    if target_type == "subgraph":
         migrate_subgraph(target)
     else:
         migrate_agent(target)

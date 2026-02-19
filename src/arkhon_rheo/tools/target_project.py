@@ -13,6 +13,8 @@ Observability:
 
 from __future__ import annotations
 
+import re
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -139,8 +141,16 @@ class TargetProject:
     # Shell execution
     # ------------------------------------------------------------------
 
+    #: Shell metacharacters that are never permitted in a command string.
+    _SHELL_METACHAR_RE = re.compile(r"[;&|`$<>\\\n]")
+
     def run_command(self, command: str, *, cwd: str | None = None) -> str:
         """Run a whitelisted shell command in the target project directory.
+
+        The command is parsed into an argument list and executed **without** a
+        shell (``shell=False``) so that injection via metacharacters is not
+        possible.  The first token of the parsed command is matched exactly
+        against ``shell_whitelist`` (no prefix matching).
 
         Args:
             command: The shell command string to execute.
@@ -150,17 +160,19 @@ class TargetProject:
             Combined stdout + stderr output.
 
         Raises:
-            ShellGuardError: If the command is not in ``shell_whitelist``.
+            ShellGuardError: If the command is not in ``shell_whitelist``
+                or contains shell metacharacters.
             subprocess.CalledProcessError: If the command exits with non-zero.
         """
         self._check_command_allowed(command)
         work_dir = Path(cwd).resolve() if cwd else self.root
 
+        args = shlex.split(command)
         self._log.info("run_command", command=command, cwd=str(work_dir))
         try:
-            result = subprocess.run(
-                command,
-                shell=True,  # noqa: S602
+            result = subprocess.run(  # noqa: S603
+                args,
+                shell=False,
                 capture_output=True,
                 text=True,
                 cwd=work_dir,
@@ -181,13 +193,40 @@ class TargetProject:
         return (self.root / relative).resolve()
 
     def _check_write_allowed(self, relative_path: str) -> None:
-        allowed = self.constraints.allowed_write_dirs
-        if not any(relative_path.startswith(d) for d in allowed):
+        """Verify the *resolved* path is inside an allowed write directory.
+
+        Using ``startswith`` on the raw string is unsafe because a crafted
+        path like ``allowed/../../../etc/passwd`` passes the check but
+        escapes the sandbox.  We resolve the full path first and then test
+        whether it is truly under an allowed root.
+        """
+        full = self._resolve(relative_path)
+        allowed_roots = [(self.root / d).resolve() for d in self.constraints.allowed_write_dirs]
+        if not any(full == allowed or allowed in full.parents for allowed in allowed_roots):
             _OP_COUNTER.labels(operation="write", status="denied").inc()
-            raise WriteGuardError(f"Write denied: '{relative_path}' is not under allowed_write_dirs={allowed}")
+            raise WriteGuardError(
+                f"Write denied: '{relative_path}' resolved to '{full}' which is "
+                f"not under allowed_write_dirs={self.constraints.allowed_write_dirs}"
+            )
 
     def _check_command_allowed(self, command: str) -> None:
-        whitelist = self.constraints.shell_whitelist
-        if not any(command.startswith(w) for w in whitelist):
+        """Validate the command against the whitelist.
+
+        Two layers of defence:
+        1. Reject any command containing shell metacharacters (``; | & ` $ …``).
+        2. Exact-match the first token of the parsed command against the whitelist
+           so that ``uv run pytest && rm -rf /`` is rejected even if ``uv`` is
+           whitelisted.
+        """
+        if self._SHELL_METACHAR_RE.search(command):
             _OP_COUNTER.labels(operation="shell", status="denied").inc()
-            raise ShellGuardError(f"Command denied: '{command}' not in shell_whitelist={whitelist}")
+            raise ShellGuardError(f"Command denied: '{command}' contains forbidden shell metacharacters.")
+        try:
+            argv0 = shlex.split(command)[0]
+        except ValueError as exc:
+            raise ShellGuardError(f"Command parse error: {exc}") from exc
+
+        whitelist = self.constraints.shell_whitelist
+        if argv0 not in whitelist:
+            _OP_COUNTER.labels(operation="shell", status="denied").inc()
+            raise ShellGuardError(f"Command denied: '{argv0}' not in shell_whitelist={whitelist}")
