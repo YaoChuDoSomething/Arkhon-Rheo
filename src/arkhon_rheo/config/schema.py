@@ -57,6 +57,7 @@ class WorkflowScheme(StrEnum):
     WATERFALL = "waterfall"
     AGILE = "agile"
     CRITIC = "critic"
+    AGENT_DECIDED = "agent-decided"
     AGENT_EVALUATION = "agent-evaluation"
 
 

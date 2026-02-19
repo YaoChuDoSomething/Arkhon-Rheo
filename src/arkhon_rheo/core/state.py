@@ -30,11 +30,11 @@ class AgentState(TypedDict):
 
     Attributes:
         messages: A sequence of messages, accumulated using operator.add.
-        next_step: The name of the next node to execute (fallback for static routing).
+        next_step: The name of the next node to execute.
         shared_context: Arbitrary key-value store for cross-node data.
         is_completed: Flag to terminate the execution loop.
         errors: List of error messages captured during execution.
-        thread_id: Unique identifier for the conversation session (used for checkpointing).
+        thread_id: Unique identifier for the conversation session.
     """
 
     messages: Annotated[list[dict[str, Any]], operator.add]
@@ -45,13 +45,25 @@ class AgentState(TypedDict):
     thread_id: str
 
 
-class RACIState(AgentState):
-    """State definition for RACI-based governance workflows.
+class RACIState(TypedDict):
+    """Unified state definition for RACI-based governance workflows.
 
     Attributes:
+        messages: A sequence of messages, accumulated using operator.add.
+        next_step: The name of the next node to execute.
+        shared_context: Arbitrary key-value store for cross-node data.
+        is_completed: Flag to terminate the execution loop.
+        errors: List of error messages.
+        thread_id: Unique identifier for the session.
         raci_config: Mapping of tasks/nodes to RACIAssignment.
         current_task: Name of the current task being evaluated.
     """
 
+    messages: Annotated[list[dict[str, Any]], operator.add]
+    next_step: str
+    shared_context: dict[str, Any]
+    is_completed: bool
+    errors: list[str]
+    thread_id: str
     raci_config: dict[str, RACIAssignment]
     current_task: str

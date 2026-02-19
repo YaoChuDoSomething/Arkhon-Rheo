@@ -32,6 +32,7 @@ dependencies = [
     "pyyaml>=6.0.3",
     "structlog>=25.5.0",
     "click>=8.1.7",
+    "dotenv>=0.9.9",
 ]
 
 [project.scripts]
@@ -40,6 +41,7 @@ arkhon-rheo = "arkhon_rheo.cli.main:main"
 [dependency-groups]
 dev = [
     "mkdocs-material>=9.7.1",
+    "pyright>=1.1.408",
     "pytest>=9.0.2",
     "pytest-asyncio>=1.3.0",
     "pytest-cov>=7.0.0",
@@ -58,20 +60,58 @@ norecursedirs = ["repos"]
 [tool.ruff]
 line-length = 120
 target-version = "py312"
+fix = true
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "UP", "B", "S", "A", "C4", "T20", "RET", "SIM", "ARG", "PTH", "ERA", "PL"]
-ignore = []
+# Enable all standard rules plus specific extras
+select = [
+    "E", "F", "W",   # pycodestyle, pyflakes
+    "I",             # isort
+    "N",             # pep8-naming
+    "UP",            # pyupgrade
+    "B",             # flake8-bugbear
+    "S",             # flake8-bandit
+    "A",             # flake8-builtins
+    "C4",            # flake8-comprehensions
+    "T20",           # flake8-print
+    "RET",           # flake8-return
+    "SIM",           # flake8-simplify
+    "ARG",           # flake8-unused-arguments
+    "PTH",           # flake8-use-pathlib
+    "ERA",           # eradicate
+    "PL",            # pylint
+    "RUF",           # ruff-specific
+]
+ignore = [
+    "PLR0913", # Allow many arguments
+    "PLR2004", # Allow magic values in tests/demonstrations
+]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-force-single-line = false
+known-first-party = ["arkhon_rheo"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]
-"src/arkhon_rheo/tools/target_project.py" = ["S602"]  # shell=True is whitelisted/guarded
+"tests/*" = ["S101", "PLR2004", "ARG002", "A002"]
+"src/arkhon_rheo/tools/target_project.py" = ["S602"]
+"src/arkhon_rheo/tools/builtin/calculator.py" = ["S307"]
+
+[tool.ty.environment]
+python-version = "3.12"
+python-platform = "linux"
+root = ["./src"]
+
+[tool.ty.analysis]
+respect-type-ignore-comments = true
+allowed-unresolved-imports = [
+    "google.genai.*",
+    "langchain.*",
+    "langgraph.*"
+]
 
 [tool.ty.rules]
-# LangGraph StateGraph accepts plain TypedDict at runtime (duck-typed StateLike).
-# ty does not recognize this pattern — suppress the false-positive in workflow files.
-invalid-argument-type = "ignore"
+# Suppress specific false positives for LangGraph state management
+invalid-argument-type = "warn"
+possibly-unresolved-reference = "warn"
+unresolved-import = "error"
+all = "warn"

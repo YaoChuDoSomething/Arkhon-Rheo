@@ -1,8 +1,10 @@
-import pytest
 from unittest.mock import AsyncMock, patch
+
+import pytest
+
 from arkhon_rheo.agents.coordinator import CoordinatorAgent
-from arkhon_rheo.core.message import AgentMessage
 from arkhon_rheo.core.agent import Agent
+from arkhon_rheo.core.message import AgentMessage
 
 
 class MockAgent(Agent):

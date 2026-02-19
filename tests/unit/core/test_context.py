@@ -1,6 +1,6 @@
-import pytest
-from arkhon_rheo.core.context import ContextManager
 import threading
+
+from arkhon_rheo.core.context import ContextManager
 
 
 def test_context_set_get():

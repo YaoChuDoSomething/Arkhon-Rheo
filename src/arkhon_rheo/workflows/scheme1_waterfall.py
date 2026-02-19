@@ -17,6 +17,8 @@ individually or chained by the Meta-Orchestrator.
 
 from __future__ import annotations
 
+from typing import Any, cast
+
 from langgraph.graph import END, START, StateGraph
 
 from arkhon_rheo.core.state import RACIState
@@ -46,7 +48,7 @@ _qa = QualityAssurance()
 
 
 def _build_flow_1_1() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     # PM creates PRD — the single Responsible + Accountable agent
     sg.add_node("pm_write_prd", make_role_node(_pm, task_key="prd"))
@@ -102,7 +104,7 @@ def _build_flow_1_1() -> StateGraph:
 
 
 def _build_flow_1_2() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "arch_write_spec",
@@ -143,7 +145,7 @@ def _build_flow_1_2() -> StateGraph:
 
 
 def _build_flow_1_3() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "coder_implement",
@@ -186,4 +188,4 @@ flow_1_1 = _build_flow_1_1().compile()
 flow_1_2 = _build_flow_1_2().compile()
 flow_1_3 = _build_flow_1_3().compile()
 
-__all__ = ["flow_1_1", "flow_1_2", "flow_1_3", "build_state"]
+__all__ = ["build_state", "flow_1_1", "flow_1_2", "flow_1_3"]

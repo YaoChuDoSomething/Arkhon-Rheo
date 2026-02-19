@@ -31,10 +31,10 @@ class Agent(ABC):
             name: The name of the agent, must be unique in the Registry.
         """
         self.name = name
-        self.inbox: asyncio.Queue["AgentMessage"] = asyncio.Queue()
+        self.inbox: asyncio.Queue[AgentMessage] = asyncio.Queue()
 
         # Auto-register
-        from arkhon_rheo.core.registry import AgentRegistry
+        from arkhon_rheo.core.registry import AgentRegistry  # noqa: PLC0415
 
         AgentRegistry.register(self)
 
@@ -58,7 +58,7 @@ class Agent(ABC):
         Returns:
             The agent instance if found, otherwise None.
         """
-        from arkhon_rheo.core.registry import AgentRegistry
+        from arkhon_rheo.core.registry import AgentRegistry  # noqa: PLC0415
 
         return AgentRegistry.get(name)
 

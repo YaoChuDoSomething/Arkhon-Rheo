@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 
 from arkhon_rheo.core.state import AgentState
@@ -29,7 +31,5 @@ def test_concrete_node_implementation():
     }
 
     # BaseNode makes the class callable, invoking execute
-    import asyncio
-
     new_state = asyncio.run(node(initial_state))
     assert new_state["shared_context"]["executed"] is True

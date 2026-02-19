@@ -60,7 +60,7 @@ class BaseNode(ABC):
             logger.error(f"Error in {self.__class__.__name__}: {e}", exc_info=True)
             raise e
 
-    def before_execute(self, state: AgentState) -> None:
+    def before_execute(self, _state: AgentState) -> None:
         """Hook executed immediately before the core logic.
 
         Args:
@@ -82,7 +82,7 @@ class BaseNode(ABC):
         """
         pass
 
-    def after_execute(self, state: AgentState) -> None:
+    def after_execute(self, _state: AgentState) -> None:
         """Hook executed immediately after the core logic successfully finishes.
 
         Args:

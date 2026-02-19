@@ -1,7 +1,8 @@
 import pytest
+
 from arkhon_rheo.core.graph import Graph
-from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.runtime.scheduler import RuntimeScheduler
+from arkhon_rheo.core.state import AgentState
 
 
 @pytest.mark.asyncio

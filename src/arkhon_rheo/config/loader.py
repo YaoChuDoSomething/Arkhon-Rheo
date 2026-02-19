@@ -52,19 +52,18 @@ class ConfigLoader:
             path = Path(self.config_path)
             if path.exists():
                 try:
-                    with open(path, "r") as f:
+                    with path.open() as f:
                         config_data = yaml.safe_load(f) or {}
                 except yaml.YAMLError as e:
-                    raise ValueError(f"Error parsing YAML file: {e}")
+                    raise ValueError(f"Error parsing YAML file: {e}") from e
             else:
                 raise FileNotFoundError(f"Config file not found: {self.config_path}")
 
         # Validate with Pydantic
         try:
-            config = ArkhonConfig(**config_data)
-            return config
+            return ArkhonConfig(**config_data)
         except ValidationError as e:
-            raise ValueError(f"Configuration validation failed: {e}")
+            raise ValueError(f"Configuration validation failed: {e}") from e
 
     @staticmethod
     def load_from_env() -> ArkhonConfig:

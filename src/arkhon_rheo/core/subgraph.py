@@ -45,6 +45,5 @@ class SubGraph:
             The final state after subgraph execution.
         """
         # Execute the subgraph using the scheduler
-        final_state = await self.scheduler.run(state, entry_point=self.entry_point)
+        return await self.scheduler.run(state, entry_point=self.entry_point)
 
-        return final_state

@@ -21,10 +21,10 @@ def initial_state():
 async def test_graph_and_scheduler_flow(initial_state):
     graph = Graph()
 
-    def node_a(state: AgentState):
+    def node_a(_state: AgentState):
         return {"messages": [{"role": "assistant", "content": "Thought A"}]}
 
-    def node_b(state: AgentState):
+    def node_b(_state: AgentState):
         return {
             "messages": [{"role": "assistant", "content": "Action B"}],
             "is_completed": True,
@@ -61,9 +61,7 @@ async def test_conditional_routing(initial_state):
     graph.add_node("logic", logic_node)
     graph.add_node("end", end_node)
 
-    graph.add_conditional_edge(
-        source="logic", path_map={"yes": "end", "no": "END"}, condition=condition_fn
-    )
+    graph.add_conditional_edge(source="logic", path_map={"yes": "end", "no": "END"}, condition=condition_fn)
 
     scheduler = RuntimeScheduler(graph, checkpoint_manager=None)
     await scheduler.run(initial_state, "logic")

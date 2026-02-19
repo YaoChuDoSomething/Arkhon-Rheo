@@ -10,6 +10,7 @@ import logging
 
 from arkhon_rheo.core.agent import Agent
 from arkhon_rheo.core.message import AgentMessage
+from arkhon_rheo.core.registry import AgentRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class SpecialistAgent(Agent):
             )
 
             # Resolve recipient via Registry to ensure proper routing
-            from arkhon_rheo.core.registry import AgentRegistry
+            registry = AgentRegistry()
 
             registry = AgentRegistry()
             recipient_agent = registry.get(message.sender)
@@ -63,6 +64,4 @@ class SpecialistAgent(Agent):
             if recipient_agent:
                 await self.send_message(recipient_agent, reply)
             else:
-                logger.error(
-                    f"Specialist '{self.name}' could not find recipient '{message.sender}' in registry."
-                )
+                logger.error(f"Specialist '{self.name}' could not find recipient '{message.sender}' in registry.")

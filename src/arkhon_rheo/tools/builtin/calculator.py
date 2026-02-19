@@ -37,12 +37,12 @@ _SAFE_FUNCS: dict[str, Any] = {
 _MAX_EXPR_LEN = 256
 
 
-def _safe_eval(node: ast.expr) -> float:
+def _safe_eval(node: ast.expr) -> int | float:
     """Recursively evaluate a safe AST node."""
     if isinstance(node, ast.Constant):
         if not isinstance(node.value, (int, float)):
             raise ValueError(f"Unsupported literal type: {type(node.value).__name__}")
-        return float(node.value)
+        return node.value
     if isinstance(node, ast.BinOp):
         op_type = type(node.op)
         if op_type not in _SAFE_OPS:
@@ -97,6 +97,9 @@ class CalculatorTool(BaseTool):
         try:
             tree = ast.parse(tool_input, mode="eval")
             result = _safe_eval(tree.body)
+            # Return integer representation when the result is a whole number
+            if isinstance(result, float) and result == int(result):
+                return str(int(result))
             return str(result)
         except (SyntaxError, ValueError, ZeroDivisionError, OverflowError) as e:
             return f"Error evaluating expression: {e}"

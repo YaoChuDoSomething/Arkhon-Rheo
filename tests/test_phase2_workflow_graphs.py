@@ -10,6 +10,8 @@ No LLM calls are made — only graph structure is inspected.
 
 from __future__ import annotations
 
+from langgraph.graph.state import CompiledStateGraph
+
 from arkhon_rheo.workflows import (
     build_state,
     flow_1_1,
@@ -22,6 +24,7 @@ from arkhon_rheo.workflows import (
     flow_3_2,
     flow_3_3,
 )
+from arkhon_rheo.workflows.base import verdict_router
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -81,18 +84,12 @@ class TestScheme1Waterfall:
         assert "qa_acceptance" in nodes
 
     def test_flow_1_1_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_1_1, CompiledStateGraph)
 
     def test_flow_1_2_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_1_2, CompiledStateGraph)
 
     def test_flow_1_3_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_1_3, CompiledStateGraph)
 
 
@@ -123,18 +120,12 @@ class TestScheme2Agile:
         assert "coder_revise" in nodes
 
     def test_flow_2_1_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_2_1, CompiledStateGraph)
 
     def test_flow_2_2_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_2_2, CompiledStateGraph)
 
     def test_flow_2_3_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_2_3, CompiledStateGraph)
 
 
@@ -166,18 +157,12 @@ class TestScheme3Critic:
         assert "increment_retry" in nodes
 
     def test_flow_3_1_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_3_1, CompiledStateGraph)
 
     def test_flow_3_2_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_3_2, CompiledStateGraph)
 
     def test_flow_3_3_is_compiled(self) -> None:
-        from langgraph.graph.state import CompiledStateGraph
-
         assert isinstance(flow_3_3, CompiledStateGraph)
 
 
@@ -188,24 +173,18 @@ class TestScheme3Critic:
 
 class TestVerdictRouter:
     def test_approved_verdict_routes_approved(self) -> None:
-        from arkhon_rheo.workflows.base import build_state, verdict_router
-
         router = verdict_router(approved_key="ok", rejected_key="retry")
         state = build_state("x")
         state["shared_context"]["verdict"] = "approved"
         assert router(state) == "ok"
 
     def test_rejected_verdict_routes_retry(self) -> None:
-        from arkhon_rheo.workflows.base import build_state, verdict_router
-
         router = verdict_router(approved_key="ok", rejected_key="retry")
         state = build_state("x")
         state["shared_context"]["verdict"] = "bad"
         assert router(state) == "retry"
 
     def test_merge_counts_as_approved(self) -> None:
-        from arkhon_rheo.workflows.base import build_state, verdict_router
-
         router = verdict_router(approved_key="merge", rejected_key="reject")
         state = build_state("x")
         state["shared_context"]["verdict"] = "merge"

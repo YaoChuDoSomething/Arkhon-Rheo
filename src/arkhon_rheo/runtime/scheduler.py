@@ -1,5 +1,5 @@
 import asyncio
-from typing import List
+
 from arkhon_rheo.core.agent import Agent
 
 
@@ -9,7 +9,7 @@ class AgentScheduler:
     """
 
     def __init__(self):
-        self.agents: List[Agent] = []
+        self.agents: list[Agent] = []
 
     def register_agent(self, agent: Agent):
         """Register an agent with the scheduler."""

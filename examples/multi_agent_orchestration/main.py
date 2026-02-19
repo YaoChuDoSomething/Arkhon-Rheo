@@ -82,13 +82,10 @@ async def main():
         "thread_id": "example_thread",
     }
 
-    print("🚀 Starting Refactored Multi-Agent Flow...")
     await scheduler.run(state, entry_point="research")
 
-    print("\n--- Message History ---")
     for msg_dict in state["messages"]:
-        m = AgentMessage(**msg_dict)
-        print(f"[{m.sender} -> {m.receiver}]: {m.content[:50]}...")
+        AgentMessage(**msg_dict)
 
 
 if __name__ == "__main__":

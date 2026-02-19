@@ -1,6 +1,5 @@
-import pytest
-from arkhon_rheo.core.state import AgentState
 from arkhon_rheo.core.rules.engine import RuleEngine
+from arkhon_rheo.core.state import AgentState
 
 
 def test_rule_engine_validation():

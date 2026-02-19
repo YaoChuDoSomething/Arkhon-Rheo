@@ -1,12 +1,15 @@
-import pytest
 import asyncio
+
+import pytest
+
 from arkhon_rheo.agents.coordinator import CoordinatorAgent
 from arkhon_rheo.agents.specialist import SpecialistAgent
-from arkhon_rheo.runtime.scheduler import AgentScheduler
-from arkhon_rheo.core.message import AgentMessage
 
 # Mock User Agent to send request and receive response
 from arkhon_rheo.core.agent import Agent
+from arkhon_rheo.core.message import AgentMessage
+from arkhon_rheo.core.registry import AgentRegistry
+from arkhon_rheo.runtime.scheduler import AgentScheduler
 
 
 class UserAgent(Agent):
@@ -24,8 +27,6 @@ class UserAgent(Agent):
 @pytest.mark.asyncio
 async def test_orchestration_flow():
     # Clear registry for test isolation
-    from arkhon_rheo.core.registry import AgentRegistry
-
     AgentRegistry.clear()
 
     # Setup Agents (they auto-register)

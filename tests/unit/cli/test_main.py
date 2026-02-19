@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from click.testing import CliRunner
 
@@ -22,10 +22,11 @@ def test_cli_init_success(tmp_path):
         assert result.exit_code == 0
         assert f"Initializing Arkhon-Rheo project: {project_name}" in result.output
         assert "Done" in result.output
-        assert os.path.exists(project_name)
-        assert os.path.isdir(os.path.join(project_name, "agents"))
-        assert os.path.isdir(os.path.join(project_name, "tools"))
-        assert os.path.exists(os.path.join(project_name, "pyproject.toml"))
+        p = Path(project_name)
+        assert p.exists()
+        assert (p / "agents").is_dir()
+        assert (p / "tools").is_dir()
+        assert (p / "pyproject.toml").exists()
 
 
 def test_cli_run_help():

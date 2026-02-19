@@ -120,7 +120,10 @@ class BaseRole(ABC):
         # Extract text response and log thoughts if any
         text = ""
         thoughts = []
-        for part in response.candidates[0].content.parts:
+        candidates = response.candidates
+        if not candidates or not candidates[0].content:
+            return text
+        for part in candidates[0].content.parts or []:
             if part.thought:
                 thoughts.append(part.text)
             elif part.text:

@@ -174,11 +174,21 @@
 | **1-1** | 需求下達 (Handover) | 瀑布流 | A 告知 (Inform) 全員 | 確立目標，單向傳遞 |
 | **1-2** | 架構轉譯 (Translation) | 瀑布流 | R 執行後告知 I | 技術落地，避免干擾 |
 | **1-3** | 實作交付 (Delivery) | 瀑布流 | R 移交責任給 A | 明確切割開發與測試 |
+| :--- | :--- | :--- | :--- | :--- |
 | **2-1** | 聯合研討 (Joint Analysis) | 協作式 | R 諮詢 (Consult) 全員 | 早期發現風險 |
 | **2-2** | 測試驅動 (Dev-Test Loop) | 協作式 | R 與 C 頻繁互動 | 確保代碼可測試性 |
 | **2-3** | 敏捷驗收 (Agile Sign-off) | 協作式 | R 向 A 展示成果 | 快速確認價值 |
+| :--- | :--- | :--- | :--- | :--- |
 | **3-1** | 規格鎖定 (Lockdown) | 審查者 | A 授權 R 定義規範 | 防止範圍蔓延 |
-| **3-2** | 審查裁判 (Tribunal) | 審查者 | QA(R) 質疑 $\rightarrow$ Arch(A) 裁決 | 確保高品質與安全性 |
+| **3-2** | 審查裁判 (Tribunal) | 審查者 | QA (R) 質疑 &rarr; Arch (A) 裁決 | 確保高品質與安全性 |
 | **3-3** | 強制重構 (Refactoring) | 審查者 | A 命令 R 修正 | 強制執行架構標準 |
+
+使用技能：
+
+1. `.agent/skills/subagent-driven-development/`
+2. `.agent/skills/agent-memory-systems`
+3. `.agent/skills/workflow-automation`
+4. `.agent/skills/using-superpowers`
+5. `.agent/skills/agent-orchestration-multi-agent-optimize`
 
 ---

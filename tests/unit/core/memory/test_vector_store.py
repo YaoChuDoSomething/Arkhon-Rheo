@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 import pytest
 
@@ -8,20 +10,20 @@ class MockVectorStore(VectorStore):
     def __init__(self):
         self.vectors = {}
 
-    async def upsert(self, id: str, vector: np.ndarray, metadata: dict):
-        self.vectors[id] = (vector, metadata)
+    async def upsert(self, item_id: str, vector: np.ndarray, metadata: dict[str, Any]) -> None:
+        self.vectors[item_id] = (vector, metadata)
 
-    async def query(self, query_vector: np.ndarray, top_k: int = 5):
+    async def search(self, query_vector: np.ndarray, top_k: int = 5) -> list[dict[str, Any]]:
         # Very simple similarity (dot product for normalized vectors)
         results = []
-        for id, (vec, meta) in self.vectors.items():
+        for item_id, (vec, meta) in self.vectors.items():
             score = float(np.dot(query_vector, vec))
-            results.append({"id": id, "score": score, "metadata": meta})
+            results.append({"item_id": item_id, "score": score, "metadata": meta})
         return sorted(results, key=lambda x: x["score"], reverse=True)[:top_k]
 
-    async def delete(self, id: str):
-        if id in self.vectors:
-            del self.vectors[id]
+    async def delete(self, item_id: str) -> None:
+        if item_id in self.vectors:
+            del self.vectors[item_id]
 
 
 @pytest.mark.asyncio
@@ -36,8 +38,8 @@ async def test_vector_store_basic():
     await store.upsert("2", v2, {"text": "B"})
 
     # Query for something close to v1
-    results = await store.query(np.array([0.9, 0.1]))
+    results = await store.search(np.array([0.9, 0.1]))
 
     # Assert
-    assert results[0]["id"] == "1"
+    assert results[0]["item_id"] == "1"
     assert results[0]["metadata"]["text"] == "A"

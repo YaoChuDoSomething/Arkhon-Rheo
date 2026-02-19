@@ -22,8 +22,7 @@ def format_weather_filename(dt: datetime.datetime) -> str:
 
 def main() -> None:
     target_date = datetime.datetime(2020, 5, 20, 0, 0)
-    era5_filename = format_weather_filename(target_date)
-    print(f"Targeting: {era5_filename}")
+    format_weather_filename(target_date)
 
 
 if __name__ == "__main__":

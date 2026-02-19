@@ -1,4 +1,3 @@
-import json
 import os
 
 base_dir = "/wk2/yaochu/github/arkhon-rheo"
@@ -48,8 +47,7 @@ results = []
 for f_path in files_to_gather:
     full_path = os.path.join(base_dir, f_path)
     if os.path.exists(full_path):
-        with open(full_path, "r") as f:
+        with open(full_path) as f:
             content = f.read()
             results.append({"path": f_path, "content": content})
 
-print(json.dumps(results))

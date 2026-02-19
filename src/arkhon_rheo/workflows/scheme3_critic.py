@@ -18,7 +18,7 @@ Implements three sub-flows for the rigorous Critic/Supervisor scheme:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from langgraph.graph import END, START, StateGraph
 
@@ -54,7 +54,7 @@ _qa = QualityAssurance()
 
 
 def _build_flow_3_1() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "pm_propose_requirements",
@@ -117,7 +117,7 @@ def _build_flow_3_1() -> StateGraph:
 
 
 def _build_flow_3_2() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "coder_submit_pr",
@@ -220,7 +220,7 @@ def _refactor_limit_router(state: RACIState) -> str:
 
 
 def _build_flow_3_3() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "arch_refactor_order",

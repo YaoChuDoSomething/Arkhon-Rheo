@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from src.weather_processor import PREFIX, SUFFIX, format_weather_filename
+from weather_processor import PREFIX, SUFFIX, format_weather_filename
 
 
 def test_format_weather_filename_basic():
@@ -34,9 +34,7 @@ def test_format_weather_filename_end_of_day():
         (2000, 1, 1, 0, 0, "20000101_0000"),
     ],
 )
-def test_format_weather_filename_parameterized(
-    year, month, day, hour, minute, expected_ts
-):
+def test_format_weather_filename_parameterized(year, month, day, hour, minute, expected_ts):
     """Test multiple datetime scenarios using parametrization."""
     dt = datetime.datetime(year, month, day, hour, minute)
     expected = f"{PREFIX}_{expected_ts}{SUFFIX}"

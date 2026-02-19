@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from click.testing import CliRunner
 
@@ -42,5 +42,5 @@ def test_init_valid_name(tmp_path):
         result = runner.invoke(init, ["valid_project"])
 
         assert result.exit_code == 0
-        assert os.path.exists("valid_project")
-        assert os.path.exists(os.path.join("valid_project", "pyproject.toml"))
+        assert Path("valid_project").exists()
+        assert (Path("valid_project") / "pyproject.toml").exists()

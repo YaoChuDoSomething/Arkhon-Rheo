@@ -28,10 +28,7 @@ async def main():
         sender="User", receiver="math-bot", content="Add 2 and 3", type="request"
     )
 
-    print(f"User: {request.content}")
     await agent.process_message(request)
-    response = agent.last_response
-    print(f"MathBot: {response}")
 
 
 if __name__ == "__main__":

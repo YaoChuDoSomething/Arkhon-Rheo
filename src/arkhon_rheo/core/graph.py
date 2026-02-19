@@ -7,14 +7,15 @@ agentic workflows.
 
 from __future__ import annotations
 
-from typing import Any, Awaitable, Callable, Union
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from arkhon_rheo.core.state import AgentState
 
 # Node function takes AgentState and returns a delta dict or new AgentState (can be async)
 NodeAction = Callable[
     [AgentState],
-    Union[AgentState, dict[str, Any], Awaitable[Union[AgentState, dict[str, Any]]]],
+    AgentState | dict[str, Any] | Awaitable[AgentState | dict[str, Any]],
 ]
 
 
@@ -65,3 +66,33 @@ class Graph:
             condition: A function that takes AgentState and returns a key in path_map.
         """
         self.conditional_edges[source] = {"map": path_map, "fn": condition}
+
+    def validate(self) -> None:
+        """Check graph consistency before execution.
+
+        Raises:
+            ValueError: if any edge references an undefined node, or if a
+                conditional edge path_map contains an undefined target
+                (non-terminal targets only; 'END' is always valid).
+        """
+        terminal_sentinels = {"END"}
+        defined = set(self.nodes.keys())
+        errors: list[str] = []
+
+        for start, end in self.edges:
+            if start not in defined:
+                errors.append(f"edge start '{start}' is not a registered node")
+            if end not in defined and end not in terminal_sentinels:
+                errors.append(f"edge end '{end}' is not a registered node")
+
+        for source, cond in self.conditional_edges.items():
+            if source not in defined:
+                errors.append(f"conditional_edge source '{source}' is not a registered node")
+            for label, target in cond["map"].items():
+                if target not in defined and target not in terminal_sentinels:
+                    errors.append(
+                        f"conditional_edge '{source}' -> '{label}': target '{target}' is not a registered node"
+                    )
+
+        if errors:
+            raise ValueError("Graph validation failed:\n  " + "\n  ".join(errors))

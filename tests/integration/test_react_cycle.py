@@ -30,16 +30,11 @@ async def test_full_react_cycle():
     # First thought: check status
     # Second thought: status is OK, valid, commit
     # But this test is linear linear cycle (Thought -> Action -> Obs -> Val -> Commit -> End)
-    # ThoughtNode: "I needs to check system status."
-    # ActionNode: "Action: check_status()" - wait, ActionNode logic parses tool calls.
-    # The integration test expects "Action: check_status()" in content.
     # Currently ActionNode executes tool calls from last message.
     # ThoughtNode generates content.
     # We need ThoughtNode to generate a message with tool_calls for ActionNode to pick up.
 
     # Let's see what the test expects:
-    # assert "check the system status" in initial_state["messages"]
-    # assert "Action: check_status()" in initial_state["messages"] (This seems like old ActionNode stub logic?)
 
     # Wait, the new ActionNode executes tool calls. It doesn't output "Action: check_status()".
     # It outputs "role": "tool", "content": "Tool Result".
@@ -94,11 +89,8 @@ async def test_full_react_cycle():
 
     # 5. Verify Final State
     # Note: messages are appended
-    assert any(
-        "check the system status" in m["content"] for m in initial_state["messages"]
-    )
+    assert any("check the system status" in m["content"] for m in initial_state["messages"])
     # New ActionNode appends tool message with content from tool run
-    # assert any("Status: OK" in m["content"] for m in initial_state["messages"])
     # Wait, check valid assertion:
     # The tool result "Status: OK" should be in a message with role tool.
     tool_messages = [m for m in initial_state["messages"] if m.get("role") == "tool"]

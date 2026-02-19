@@ -14,8 +14,10 @@ def test_checkpoint_save_load_json(tmp_path):
     manager.save_checkpoint(state)
     loaded_state = manager.load_checkpoint("thread_123")
 
+    assert loaded_state is not None
     assert loaded_state == state
     assert loaded_state["shared_context"]["key"] == "value"
+
     assert "thread_123" in manager.list_threads()
 
 
@@ -30,4 +32,5 @@ def test_checkpoint_overwrite(tmp_path):
     manager.save_checkpoint(state_v2)
 
     loaded = manager.load_checkpoint("t1")
+    assert loaded is not None
     assert loaded["val"] == 2

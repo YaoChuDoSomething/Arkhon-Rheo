@@ -14,8 +14,9 @@ def test_tool_registry_registration():
         name = "mock_tool"
         description = "A mock tool"
 
-        def run(self, input: str, **kwargs: Any) -> str:
-            return f"Mock: {input}"
+        def run(self, **kwargs: Any) -> str:
+            tool_input = kwargs.get("input", "")
+            return f"Mock: {tool_input}"
 
     tool = MockTool()
     registry.register(tool)
@@ -35,7 +36,7 @@ def test_tool_registry_duplicate_registration_overwrite():
         name = "mock_tool"
         description = "A mock tool"
 
-        def run(self, input: str, **kwargs: Any) -> str:
+        def run(self, **kwargs: Any) -> str:
             return ""
 
     t1 = MockTool()

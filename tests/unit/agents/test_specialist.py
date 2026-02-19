@@ -1,13 +1,14 @@
 import pytest
 
 from arkhon_rheo.agents.specialist import SpecialistAgent
+from arkhon_rheo.core.agent import Agent
 from arkhon_rheo.core.message import AgentMessage
 
 
 @pytest.mark.asyncio
 async def test_specialist_processing():
     # Register a coordinator for the specialist to find in the registry
-    coordinator = SpecialistAgent("coordinator", domain="general")
+    SpecialistAgent("coordinator", domain="general")
     agent = SpecialistAgent("coder", domain="coding")
     msg = AgentMessage(
         sender="coordinator",
@@ -19,7 +20,8 @@ async def test_specialist_processing():
     # Track replies
     replies = []
 
-    async def mock_send(recipient: "Agent", message: AgentMessage) -> None:
+    async def mock_send(_recipient: Agent, message: AgentMessage) -> None:
+
         replies.append(message)
 
     agent.send_message = mock_send  # type: ignore

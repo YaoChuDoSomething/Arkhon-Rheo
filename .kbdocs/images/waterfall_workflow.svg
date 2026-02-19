@@ -1,0 +1,81 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definitions for gradients and markers -->
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" font-weight="bold" fill="#333">Waterfall Workflow</text>
+
+  <!-- Phase 1: Requirements & Planning -->
+  <rect x="50" y="80" width="200" height="400" rx="10" ry="10" fill="#f0f4f8" stroke="#ccc" stroke-width="1"/>
+  <text x="150" y="105" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" font-weight="bold" fill="#555">Requirements</text>
+  
+  <rect x="70" y="130" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="150" y="155" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">1. Scope Definition</text>
+  
+  <rect x="70" y="190" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="150" y="215" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">2. Scheduling</text>
+
+  <!-- Arrow to Phase 2 -->
+  <line x1="250" y1="280" x2="290" y2="280" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- Phase 2: Design & Documentation -->
+  <rect x="50" y="500" width="700" height="80" rx="10" ry="10" fill="#fff3e0" stroke="#ccc" stroke-width="1" transform="translate(0, -420) translate(260, 420)"/> <!-- Adjusting layout logic mentally, let's keep it simple vertical columns -->
+  
+  <!-- Resetting Layout to Columns -->
+  
+  <!-- Column 2: Design -->
+  <rect x="300" y="80" width="200" height="400" rx="10" ry="10" fill="#f0f4f8" stroke="#ccc" stroke-width="1"/>
+  <text x="400" y="105" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" font-weight="bold" fill="#555">Design & Docs</text>
+
+  <rect x="320" y="130" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="400" y="155" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">3. Specs Strategy</text>
+
+  <rect x="320" y="190" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="400" y="215" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">4. Standards</text>
+
+  <rect x="320" y="250" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="400" y="275" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">5. System Design</text>
+
+  <!-- Arrow to Phase 3 -->
+  <line x1="500" y1="280" x2="540" y2="280" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- Column 3: Implementation -->
+  <rect x="550" y="80" width="200" height="400" rx="10" ry="10" fill="#f0f4f8" stroke="#ccc" stroke-width="1"/>
+  <text x="650" y="105" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" font-weight="bold" fill="#555">Implementation</text>
+
+  <rect x="570" y="130" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="650" y="155" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">8. Env Setup</text>
+
+  <rect x="570" y="190" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="650" y="215" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">9. Coding</text>
+
+  <rect x="570" y="250" width="160" height="40" rx="5" ry="5" fill="url(#blueGradient)" />
+  <text x="650" y="275" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">10. CI/CD Scripts</text>
+
+  <!-- Bottom Row: Verification & Closure -->
+  <rect x="50" y="500" width="700" height="80" rx="10" ry="10" fill="#e8f5e9" stroke="#ccc" stroke-width="1"/>
+  <text x="400" y="525" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" font-weight="bold" fill="#555">Verification & Closure</text>
+  
+  <rect x="100" y="535" width="160" height="35" rx="5" ry="5" fill="#66bb6a" />
+  <text x="180" y="557" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">12. Verification</text>
+
+  <rect x="320" y="535" width="160" height="35" rx="5" ry="5" fill="#66bb6a" />
+  <text x="400" y="557" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">13. Packaging</text>
+
+  <rect x="540" y="535" width="160" height="35" rx="5" ry="5" fill="#66bb6a" />
+  <text x="620" y="557" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">14. Acceptance</text>
+
+  <!-- Connections -->
+  <path d="M 230 150 L 320 150" stroke="#aaa" stroke-width="1" stroke-dasharray="4" fill="none"/>
+  <path d="M 480 270 L 570 270" stroke="#aaa" stroke-width="1" stroke-dasharray="4" fill="none"/>
+  <path d="M 650 480 L 650 500" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+
+</svg>

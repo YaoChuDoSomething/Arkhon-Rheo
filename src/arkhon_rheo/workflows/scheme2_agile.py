@@ -15,7 +15,7 @@ Implements three sub-flows for the iterative, feedback-rich Agile scheme:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from langgraph.graph import END, START, StateGraph
 
@@ -52,7 +52,7 @@ _qa = QualityAssurance()
 
 
 def _build_flow_2_1() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "pm_draft_requirements",
@@ -141,7 +141,7 @@ def _retry_limit_router(state: RACIState) -> str:
 
 
 def _build_flow_2_2() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "qa_write_tests",
@@ -219,7 +219,7 @@ def _build_flow_2_2() -> StateGraph:
 
 
 def _build_flow_2_3() -> StateGraph:
-    sg = StateGraph(RACIState)
+    sg = StateGraph(cast(Any, RACIState))
 
     sg.add_node(
         "qa_demo_summary",

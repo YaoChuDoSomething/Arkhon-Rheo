@@ -24,20 +24,16 @@ from arkhon_rheo.workflows.scheme2_agile import flow_2_1, flow_2_2, flow_2_3
 from arkhon_rheo.workflows.scheme3_critic import flow_3_1, flow_3_2, flow_3_3
 
 __all__ = [
-    # base utilities
     "build_state",
-    "make_role_node",
-    "verdict_router",
-    # Scheme 1
     "flow_1_1",
     "flow_1_2",
     "flow_1_3",
-    # Scheme 2
     "flow_2_1",
     "flow_2_2",
     "flow_2_3",
-    # Scheme 3
     "flow_3_1",
     "flow_3_2",
     "flow_3_3",
+    "make_role_node",
+    "verdict_router",
 ]

@@ -2,6 +2,7 @@ import pytest
 
 from arkhon_rheo.core.agent import Agent
 from arkhon_rheo.core.message import AgentMessage
+from arkhon_rheo.core.registry import AgentRegistry
 
 
 class EchoAgent(Agent):
@@ -14,8 +15,7 @@ class EchoAgent(Agent):
                 type="pong",
                 correlation_id=message.id,
             )
-            from arkhon_rheo.core.registry import AgentRegistry
-
+            # Use registry from singleton
             recipient = AgentRegistry.get(message.sender)
             if recipient:
                 await self.send_message(recipient, reply)
@@ -32,8 +32,6 @@ class StarterAgent(Agent):
 
 @pytest.mark.asyncio
 async def test_agent_conversation():
-    from arkhon_rheo.core.registry import AgentRegistry
-
     AgentRegistry.clear()
 
     agent_a = StarterAgent("A")

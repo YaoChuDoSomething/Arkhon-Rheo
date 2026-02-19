@@ -113,7 +113,7 @@ class TestRACILoader:
         bad_file = tmp_path / "bad.yaml"
         bad_file.write_text("orchestration: {default_scheme: invalid_value}", encoding="utf-8")
         # Pydantic should raise ValueError for bad enum
-        with pytest.raises(ValueError):  # noqa: PT011
+        with pytest.raises(ValueError):
             load_raci_config(bad_file)
 
 

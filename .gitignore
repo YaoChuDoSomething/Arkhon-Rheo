@@ -6,12 +6,6 @@ dist/
 wheels/
 *.egg-info
 
-# Virtual environments
-.env
-.venv/
-!.venv/bin/activate
-.research/
-
 # Python
 __pycache__/
 *.py[cod]
@@ -67,11 +61,9 @@ cover/
 .idea/
 
 # Project Specific
+.env
 repos/
 #.agent/
 #.agent/skills/
-file_summary.txt
-mdlist.txt
-gemini_exec_history.json
 *.swp
 *.swo

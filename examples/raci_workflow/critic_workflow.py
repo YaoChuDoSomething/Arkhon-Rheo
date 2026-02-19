@@ -1,18 +1,16 @@
 import asyncio
-from typing import Any, Dict
+from typing import Any
 
 from arkhon_rheo.core.graph import Graph
 from arkhon_rheo.core.state import AgentState, RACIAssignment, RACIState
 from arkhon_rheo.nodes.governance import DecisionNode, InformNode
 
 
-async def mock_coder_node(state: AgentState) -> Dict[str, Any]:
-    print("--- CODER (R) is working ---")
+async def mock_coder_node(state: AgentState) -> dict[str, Any]:
     return {"messages": [{"role": "assistant", "content": "print('hello world')"}]}
 
 
-async def mock_qa_node(state: AgentState) -> Dict[str, Any]:
-    print("--- QA (R-Review) is reviewing ---")
+async def mock_qa_node(state: AgentState) -> dict[str, Any]:
     # If already approved by architect in a previous loop, don't overwrite
     if state.get("shared_context", {}).get("verdict") == "approved":
         return {}
@@ -56,17 +54,15 @@ async def main():
         "current_task": "coding_task",
     }
 
-    print("Starting RACI Workflow: Scheme 3 (Critic Mode)")
 
     current_node = "Coder"
 
     # We simulate exactly 5 steps to show the loop:
     # Coder -> QA -> Governance (Reject) -> Coder -> QA -> Governance (Approve) -> Notify -> END
-    for i in range(10):
+    for _i in range(10):
         if current_node == "END":
             break
 
-        print(f"\n[Step {i + 1}] Executing Node: {current_node}")
         node_fn = workflow.nodes.get(current_node)
         if not node_fn:
             break
@@ -84,17 +80,14 @@ async def main():
         elif current_node == "Governance":
             next_step = state.get("next_step")
             if next_step == "coding_task":  # Backtrack to responsible node
-                print("!!! REJECTED - Looping back to Coder (Responsible) !!!")
                 current_node = "Coder"
                 # For simulation purposes, we "fix" the issue so the next pass succeeds
                 state["shared_context"]["verdict"] = "approved"
             else:
-                print("### APPROVED - Proceeding to notify ###")
                 current_node = "Notify"
         elif current_node == "Notify":
             current_node = "END"
 
-    print("\n--- Workflow Completed ---")
 
 
 if __name__ == "__main__":

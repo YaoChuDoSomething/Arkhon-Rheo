@@ -8,7 +8,7 @@ and state persistence.
 from __future__ import annotations
 
 import asyncio
-from typing import Any
+from typing import Any, cast
 
 from arkhon_rheo.core.graph import Graph
 from arkhon_rheo.core.state import AgentState
@@ -59,23 +59,22 @@ class RuntimeScheduler:
         self._save_checkpoint(state)
         return self._resolve_next(current_node, state)
 
-    async def _execute_node(
-        self, node_name: str, state: AgentState
-    ) -> dict[str, Any] | None:
+    async def _execute_node(self, node_name: str, state: AgentState) -> dict[str, Any] | None:
         """Execute a specific node's action."""
         action = self.graph.nodes[node_name]
         result = action(state)
         if asyncio.iscoroutine(result):
             result = await result
-        return result if isinstance(result, dict) else None
+        return cast("dict[str, Any] | None", result) if isinstance(result, dict) else None
 
     def _apply_delta(self, state: AgentState, result: dict[str, Any]) -> None:
         """Apply the results of a node execution to the state."""
+        _state = cast(Any, state)
         for k, v in result.items():
-            if k == "messages" and k in state:
-                state[k] = state[k] + v
+            if k == "messages" and k in _state:
+                _state[k] = _state[k] + v
             else:
-                state[k] = v
+                _state[k] = v
 
     def _handle_error(self, state: AgentState, error: Exception) -> str:
         """Log execution errors and terminate the graph flow."""

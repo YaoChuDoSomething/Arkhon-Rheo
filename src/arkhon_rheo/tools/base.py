@@ -7,7 +7,7 @@ framework, utilizing Pydantic for robust input schema definition and validation.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Type
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -27,7 +27,7 @@ class BaseTool(ABC):
 
     name: str
     description: str
-    args_schema: Type[BaseModel] | None = None
+    args_schema: type[BaseModel] | None = None
 
     def __init__(self, name: str | None = None, description: str | None = None) -> None:
         """Initialize a BaseTool instance.

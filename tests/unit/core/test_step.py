@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from arkhon_rheo.core.step import ReActStep, StepType
 
 
@@ -17,9 +18,7 @@ def test_step_initialization():
 def test_step_serialization():
     """Test converting step to dict/json."""
     timestamp = datetime.now()
-    step = ReActStep(
-        step_type=StepType.ACTION, content="tool_call(arg=1)", timestamp=timestamp
-    )
+    step = ReActStep(step_type=StepType.ACTION, content="tool_call(arg=1)", timestamp=timestamp)
 
     data = step.to_dict()
     assert data["step_type"] == "action"
@@ -47,4 +46,3 @@ def test_step_types():
     assert StepType.THOUGHT == "thought"
     assert StepType.ACTION == "action"
     assert StepType.OBSERVATION == "observation"
-    # assert StepType.SYSTEM == "system" # If we have system messages

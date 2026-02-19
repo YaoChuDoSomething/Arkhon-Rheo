@@ -44,7 +44,4 @@ class RuleEngine:
         Returns:
             True if all rules return True, otherwise False.
         """
-        for rule in self.rules:
-            if not rule(state):
-                return False
-        return True
+        return all(rule(state) for rule in self.rules)

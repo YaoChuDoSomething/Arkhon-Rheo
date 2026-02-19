@@ -1,3 +1,0 @@
-[analysis]
-respect-type-ignore-comments = true
-allowed-unresolved-imports = ["google.genai.*"]

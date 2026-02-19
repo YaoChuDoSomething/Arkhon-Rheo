@@ -17,15 +17,19 @@ class ContextManager:
     asynchronous tasks or threads.
     """
 
-    _context: ContextVar[dict[str, Any]] = ContextVar("arkhon_context", default={})
+    _context: ContextVar[dict[str, Any] | None] = ContextVar("arkhon_context", default=None)
 
     def get_context(self) -> dict[str, Any]:
-        """Return a copy of the current context dictionary.
+        """Retrieve the current thread-local context.
 
         Returns:
-            A dictionary containing the current context items.
+            A dictionary containing the current context.
         """
-        return self._context.get().copy()
+        ctx = self._context.get()
+        if ctx is None:
+            ctx = {}
+            self._context.set(ctx)
+        return ctx
 
     def set(self, key: str, value: Any) -> None:
         """Set a value in the current context.
@@ -48,7 +52,7 @@ class ContextManager:
         Returns:
             The value associated with the key, or the default value.
         """
-        return self._context.get().get(key, default)
+        return self.get_context().get(key, default)
 
     def clear(self) -> None:
         """Clear the current context dictionary."""

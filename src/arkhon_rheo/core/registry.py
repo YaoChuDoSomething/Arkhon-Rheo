@@ -8,7 +8,7 @@ to locate them by name.
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 if TYPE_CHECKING:
     from arkhon_rheo.core.agent import Agent
@@ -23,13 +23,13 @@ class AgentRegistry:
     enabling agents to look each other up for communication.
     """
 
-    _instance: AgentRegistry | None = None
-    _agents: dict[str, Agent] = {}
+    _instance: ClassVar[AgentRegistry | None] = None
+    _agents: ClassVar[dict[str, Agent]] = {}
 
     def __new__(cls) -> AgentRegistry:
         """Ensure singleton instance of the registry."""
         if cls._instance is None:
-            cls._instance = super(AgentRegistry, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
             # Ensure _agents is initialized on the class only once
             if not hasattr(cls, "_agents") or cls._agents is None:
                 cls._agents = {}
@@ -58,6 +58,11 @@ class AgentRegistry:
             The agent instance if found, otherwise None.
         """
         return cls._agents.get(name)
+
+    @classmethod
+    def deregister(cls, name: str) -> None:
+        """Remove an agent from the registry by name."""
+        cls._agents.pop(name, None)
 
     @classmethod
     def list_agents(cls) -> dict[str, Agent]:

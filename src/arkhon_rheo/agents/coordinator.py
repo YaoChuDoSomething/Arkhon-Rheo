@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 from arkhon_rheo.core.agent import Agent
 from arkhon_rheo.core.message import AgentMessage
+from arkhon_rheo.core.registry import AgentRegistry
 
 if TYPE_CHECKING:
     pass
@@ -70,9 +71,7 @@ class CoordinatorAgent(Agent):
         if message.type == "request":
             intent = message.metadata.get("intent")
             if not intent:
-                logger.warning(
-                    f"Coordinator {self.name}: Missing intent in request {message.id}"
-                )
+                logger.warning(f"Coordinator {self.name}: Missing intent in request {message.id}")
                 return
 
             target_agent = await self.route_task(intent)
@@ -91,17 +90,13 @@ class CoordinatorAgent(Agent):
                 )
                 await self.send_message(target_agent, forwarded_msg)
             else:
-                logger.warning(
-                    f"Coordinator {self.name}: No route found for intent '{intent}'"
-                )
+                logger.warning(f"Coordinator {self.name}: No route found for intent '{intent}'")
 
         elif message.type == "response":
             # Forward response back to the original requester
             reply_to = message.metadata.get("reply_to")
             if reply_to:
-                # Resolve recipient using Registry (via _resolve_agent helper or Registry directly)
-                from arkhon_rheo.core.registry import AgentRegistry
-
+                # Resolve recipient via Registry to ensure proper routing
                 # Registry is usually accessed via instance in singleton pattern
                 # Assuming AgentRegistry.get is a static/class method or accessible via singleton
                 registry = AgentRegistry()
@@ -118,10 +113,6 @@ class CoordinatorAgent(Agent):
                     )
                     await self.send_message(target_agent, forwarded_msg)
                 else:
-                    logger.warning(
-                        f"Coordinator {self.name}: Target '{reply_to}' not found for response forwarding"
-                    )
+                    logger.warning(f"Coordinator {self.name}: Target '{reply_to}' not found for response forwarding")
             else:
-                logger.debug(
-                    f"Coordinator {self.name}: Response received without 'reply_to' metadata"
-                )
+                logger.debug(f"Coordinator {self.name}: Response received without 'reply_to' metadata")
