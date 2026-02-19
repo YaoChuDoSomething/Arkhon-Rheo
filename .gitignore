@@ -69,6 +69,7 @@ cover/
 # Project Specific
 repos/
 #.agent/
+#.agent/skills/
 file_summary.txt
 mdlist.txt
 gemini_exec_history.json

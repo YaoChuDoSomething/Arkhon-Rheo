@@ -1,0 +1,44 @@
+# Arkhon-Rheo RACI Configuration
+
+# 專案基本資訊與被開發目標
+project:
+  name: "DLAMP-Expansion"
+  target_path: "../dlamp"
+
+# 代理人角色定義
+agents:
+  pm:
+    role: "ProductManager"
+    model: "gemini-3-pro-preview"
+    persona: "research-engineer, readme, writing-plans, tdd-workflow, langfuse, prometheus-client, observability, observability-agent"
+
+  architect:
+    role: "SystemArchitect"
+    model: "gemini-3-pro-preview"
+    persona: "ai-agent-architect, architecture, architecture-pattern, design-md, langchain-architecture"
+
+  coder:
+    role: "SoftwareEngineer"
+    model: "gemini-3-flash-preview"
+    persona: "clean-code, python-pro, agent-tool-builder, mcp-builder, context7-auto-research, langgraph"
+
+  qa:
+    role: "QualityAssurance"
+    model: "gemini-3-flash-preview"
+    persona: "research-engineer, context7-auto-research, uv-package-manager, langgraph"
+
+# 工作流程編排
+orchestration:
+  # 初始啟動的方案 ( waterfall | agile | critic | agent-decided )
+  default_scheme: "agent-decided"
+
+  # 權限與操作限制
+  constraints:
+    allowed_write_dirs: ["config/", "src/", "tests/", "docs/"]
+    shell_whitelist: ["uv run pytest", "ruff check", "ty check"]
+    auto_commit: true # true: 代理人決定 | false: 必須由人工確認 Git 操作
+
+# 記憶與觀測性
+memory:
+  project_rag_enabled: true
+  episode_log_path: "./.agent/episodes.json"

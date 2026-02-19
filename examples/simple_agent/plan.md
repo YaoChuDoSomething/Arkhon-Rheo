@@ -1,8 +1,11 @@
 # 實作"用於規劃"的"序列思考"+"狀態機"範例
 
-The state-machine and sequential-thinking processes agentic workflows
+1. 要開發位於路徑:"/wk2/yaochu/github/dlamp/"，的資料驅動區域天氣預報模型，運用"The state-machine and sequential-thinking processes"有效率的查看整個專案目錄，並列出需要改進的重點，並達成最小可執行訓練及推論的模型專案(MVP)。
+2. 需要去區分哪些內容是屬於arkhon-rheo專案要建構的部分，哪些是代理系統構築完畢之後，透過執行代理系統在"/wk2/yaochu/github/dlamp/"路徑中執行"dlamp"的開發與建構。
 
-"序列思考"+"狀態機"合併使用的解說
+---
+
+以下文章式有關於 "序列思考" + "狀態機" 合併使用的解說。
 
 ```context
 我們可以用「**解數學難題**」的過程，來比喻這兩者的關係。
@@ -48,6 +51,5 @@ The state-machine and sequential-thinking processes agentic workflows
 
 * **Sequential Thinking (順序思維)**：是 AI 的**智力**，負責解決「怎麼做」的問題（草稿紙上的推導）。
 * **State Machine (狀態機)**：是 AI 的**紀律**，負責解決「現在該做什麼」的問題（考卷上的作答階段）。
-
 ```
 

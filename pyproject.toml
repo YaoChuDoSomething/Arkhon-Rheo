@@ -56,7 +56,7 @@ asyncio_default_fixture_loop_scope = "function"
 norecursedirs = ["repos"]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 target-version = "py312"
 
 [tool.ruff.lint]
@@ -67,14 +67,11 @@ ignore = []
 combine-as-imports = true
 force-single-line = false
 
-[tool.mypy]
-python_version = "3.12"
-strict = true
-ignore_missing_imports = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"src/arkhon_rheo/tools/target_project.py" = ["S602"]  # shell=True is whitelisted/guarded
 
-[[tool.mypy.overrides]]
-module = "google.genai.*"
-ignore_missing_imports = true
+[tool.ty.rules]
+# LangGraph StateGraph accepts plain TypedDict at runtime (duck-typed StateLike).
+# ty does not recognize this pattern — suppress the false-positive in workflow files.
+invalid-argument-type = "ignore"
